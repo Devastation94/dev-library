@@ -16,7 +16,7 @@ namespace dev_refined
             var badPlayers = new List<BadPlayer>();
             var paddingArray = new int[] { 14, 10, 6 };
 
-            var guildies = await WowAuditClient.GetCharacters();
+            var guildies = await WowAuditClient.GetCharacters("Refined");
 
             foreach (var guildy in guildies.Where(g => g.Rank.ToUpper() != "RAIDER ALT"))
             {
