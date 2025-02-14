@@ -27,14 +27,14 @@ namespace dev_refined.Clients
 
             return guildies;
         }
-        public async Task<bool> UpdateWishlist(string reportId, string guild)
+        public async Task<WoWAuditWishlistResponse> UpdateWishlist(string reportId, string guild)
         {
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AppSettings.WoWAudit.First(wa => wa.Guild == guild.ToUpper()).Token);
             var requestBody = new StringContent(JsonConvert.SerializeObject(new WoWAuditWishlistRequest(reportId)), Encoding.UTF8, ContentType.Json);
             var response = await client.PostAsync($"{Constants.WOW_AUDIT_URL}/wishlists", requestBody).Result.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonConvert.DeserializeObject<WoWAuditWishlistResponse>(response).Created == "true";
+            return JsonConvert.DeserializeObject<WoWAuditWishlistResponse>(response);
         }
     }
 }

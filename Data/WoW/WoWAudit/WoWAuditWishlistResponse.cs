@@ -11,5 +11,7 @@ namespace dev_library.Data.WoW.WoWAudit
     {
         [JsonProperty("created")]
         public string Created { get; set; }
+        [JsonProperty("base")]
+        public string[] Base { get; set; }
     }
 }
