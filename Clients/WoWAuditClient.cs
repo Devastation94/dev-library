@@ -1,11 +1,11 @@
-﻿using System.Net.Http.Headers;
-using System.Text;
-using dev_library.Data;
+﻿using dev_library.Data;
 using dev_library.Data.WoW.WoWAudit;
 using dev_refined.Data;
 using Newtonsoft.Json;
 using RestSharp;
 using Serilog;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace dev_refined.Clients
 {

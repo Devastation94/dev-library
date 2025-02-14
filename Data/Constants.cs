@@ -1,7 +1,4 @@
-﻿using dev_library.Data;
-using System.ComponentModel;
-
-namespace dev_refined.Data
+﻿namespace dev_refined.Data
 {
     public class Constants
     {

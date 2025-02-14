@@ -1,5 +1,4 @@
 using dev_library.Data;
-using dev_refined.Data;
 using dev_refined.Data.Realms;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -8,14 +7,14 @@ using System.Text;
 namespace dev_refined.Clients
 {
     public class BattleNetClient
-    {        
+    {
         const string battleNetApiUrl = "https://us.api.blizzard.com/data/wow/connected-realm/61?namespace=dynamic-us&locale=en_US&access_token=";
-        const string battleNetTokenUrl =  "https://oauth.battle.net/token";
+        const string battleNetTokenUrl = "https://oauth.battle.net/token";
 
         public async Task<string> GetOAuthToken()
         {
             using var client = new HttpClient();
-            using var request = new HttpRequestMessage(new HttpMethod("POST"),battleNetTokenUrl);
+            using var request = new HttpRequestMessage(new HttpMethod("POST"), battleNetTokenUrl);
 
             var base64authorization = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{AppSettings.BattleNetClientId}:{AppSettings.BattleNetClientSecret}"));
             request.Headers.TryAddWithoutValidation("Authorization", $"Basic {base64authorization}");
@@ -29,7 +28,7 @@ namespace dev_refined.Clients
         }
 
         public async Task<BlizzardRealmResponse> GetServerInformation(string token)
-        {            
+        {
             using var client = new HttpClient();
             using var request = new HttpRequestMessage(new HttpMethod("GET"), battleNetApiUrl);
             request.Headers.TryAddWithoutValidation("accept", "application/json");

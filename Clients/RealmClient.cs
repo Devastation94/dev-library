@@ -9,7 +9,7 @@ namespace dev_refined
 
         const string fileLocation = "D:\\Code\\dev-refined\\cache.json";
         DiscordClient discordClient = new DiscordClient();
-        BattleNetClient battleNetClient= new BattleNetClient();
+        BattleNetClient battleNetClient = new BattleNetClient();
 
         public async Task GetServerAvailibility()
         {
@@ -22,7 +22,7 @@ namespace dev_refined
                     Log.Information("");
 
                     var token = await battleNetClient.GetOAuthToken();
-                    
+
                     var realmData = await battleNetClient.GetServerInformation(token);
 
                     var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
@@ -40,7 +40,7 @@ namespace dev_refined
                     }
 
                     realmStatus = realmData.Status.Name.ToUpper() == "UP";
-                    
+
                 }
                 Thread.Sleep(1000);
             }
