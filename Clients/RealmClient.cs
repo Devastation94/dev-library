@@ -7,7 +7,7 @@ namespace dev_refined
     public class RealmClient
     {
 
-        const string fileLocation = "D:\\Code\\dev-refined\\cache.json";
+        const string fileLocation = "cache.json";
         DiscordClient discordClient = new DiscordClient();
         BattleNetClient battleNetClient = new BattleNetClient();
 
@@ -40,7 +40,6 @@ namespace dev_refined
                     }
 
                     realmStatus = realmData.Status.Name.ToUpper() == "UP";
-
                 }
                 Thread.Sleep(1000);
             }

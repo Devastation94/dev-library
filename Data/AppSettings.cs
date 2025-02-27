@@ -13,11 +13,12 @@ namespace dev_library.Data
         public static string BattleNetClientSecret { get; set; }
         public static string DiscordBotToken { get; set; }
         public static List<WoWAudit> WoWAudit { get; set; }
+        public static GoogleSheet GoogleSheet { get; set; }
 
 
         public static void Initialize()
         {
-            using (var doc = JsonDocument.Parse(File.ReadAllText("..\\..\\..\\..\\appsettings.json")))
+            using (var doc = JsonDocument.Parse(File.ReadAllText("D:/Code/appsettings.json")))
             {
                 BotHookUrl = doc.RootElement.GetProperty("BOT_HOOK_URL").ToString();
                 RaiderHookUrl = doc.RootElement.GetProperty("RAIDER_HOOK_URL").ToString();
@@ -27,6 +28,7 @@ namespace dev_library.Data
                 BattleNetClientSecret = doc.RootElement.GetProperty("BATTLE_NET_CLIENT_SECRET").ToString();
                 DiscordBotToken = doc.RootElement.GetProperty("DISCORD_BOT_TOKEN").ToString();
                 WoWAudit = JsonConvert.DeserializeObject<List<WoWAudit>>(doc.RootElement.GetProperty("WOWAUDIT").ToString());
+                GoogleSheet = JsonConvert.DeserializeObject<GoogleSheet>(doc.RootElement.GetProperty("OFFICERSHEET").ToString());
             }
         }
     }
@@ -40,5 +42,17 @@ namespace dev_library.Data
         [JsonProperty("TOKEN")]
         public string Token { get; set; }
 
+    }
+
+    public class GoogleSheet
+    {
+        [JsonProperty("NAME")]
+        public string Name { get; set; }
+        [JsonProperty("ID")]
+        public string Id { get; set; }
+        [JsonProperty("SHEET_NAME")]
+        public string SheetName { get; set; }
+        [JsonProperty("CREDENTIALS_PATH")]
+        public string CredentialsPath { get; set; }
     }
 }
