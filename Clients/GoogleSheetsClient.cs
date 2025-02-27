@@ -9,6 +9,8 @@ namespace dev_library.Clients
 {
     public class GoogleSheetsClient
     {
+
+
         public GoogleSheetsClient()
         {
             SheetsService = GetSheetsService();
@@ -46,7 +48,8 @@ namespace dev_library.Clients
                 foreach (var row in values)
                 {
                     if (row.Count < 5) continue; // Skip incomplete rows
-                    entries.Add(new ItemUpgrade(row[0].ToString(), row[1].ToString(), row[2].ToString(), row[3].ToString(), Convert.ToInt32(row[4])));
+
+                    entries.Add(new ItemUpgrade(row[0].ToString(), row[1].ToString(), row[2].ToString(), row[3].ToString(), double.Parse(row[4].ToString())));
                 }
             }
             return entries;
@@ -75,7 +78,7 @@ namespace dev_library.Clients
             await request.ExecuteAsync();
         }
 
-        public async Task UpdateSheet(List<ItemUpgrade> newEntries)
+        public async Task<bool> UpdateSheet(List<ItemUpgrade> newEntries)
         {
             // Step 1: Read current data from the sheet
             var sheetData = await ReadEntries();
@@ -92,6 +95,8 @@ namespace dev_library.Clients
             // Step 4: Clear & Update Sheet
             await ClearSheet();
             await WriteEntries(sheetData);
+
+            return true;
         }
     }
 }
