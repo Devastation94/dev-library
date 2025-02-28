@@ -15,7 +15,7 @@ namespace dev_library.Clients
         private static string RaidBotsFileUrl = "https://raidbots.com/reports/{0}/data.csv";
         private const string MAX_HERO_ILVL = "665";
         private static Stopwatch Stopwatch = new Stopwatch();
-
+        private const string cacheName = "wowcache.json";
         public async Task<bool> IsValidReport(string url)
         {
             var bnetClient = new BattleNetClient();
@@ -71,7 +71,7 @@ namespace dev_library.Clients
         public async Task<List<ItemUpgrade>> GetItemUpgrades(string reportId)
         {
             var bnetClient = new BattleNetClient();
-            var items = JsonConvert.DeserializeObject<List<Item>>(File.ReadAllText("D:/Code/wowcache.json"));
+            var items = JsonConvert.DeserializeObject<List<Item>>(File.ReadAllText($"{AppSettings.BasePath}/{cacheName}"));
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; // TLS 1.3 is not directly supported in .NET Framework
             var url = string.Format(RaidBotsFileUrl, reportId);
@@ -151,8 +151,8 @@ namespace dev_library.Clients
                     itemName = item.Name;
                 }
 
-                File.WriteAllText("D:/Code/wowcache.json", JsonConvert.SerializeObject(items));
-                
+                File.WriteAllText($"{AppSettings.BasePath}/{cacheName}", JsonConvert.SerializeObject(items));
+
                 var slot = Helpers.GetItemSlot(parts[6]);
 
                 itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain));

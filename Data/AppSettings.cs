@@ -14,11 +14,11 @@ namespace dev_library.Data
         public static string DiscordBotToken { get; set; }
         public static List<WoWAudit> WoWAudit { get; set; }
         public static GoogleSheet GoogleSheet { get; set; }
-
+        public static string BasePath { get; set; } = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
 
         public static void Initialize()
         {
-            using (var doc = JsonDocument.Parse(File.ReadAllText("D:/Code/appsettings.json")))
+            using (var doc = JsonDocument.Parse(File.ReadAllText($"{BasePath}/appsettings.json")))
             {
                 BotHookUrl = doc.RootElement.GetProperty("BOT_HOOK_URL").ToString();
                 RaiderHookUrl = doc.RootElement.GetProperty("RAIDER_HOOK_URL").ToString();
