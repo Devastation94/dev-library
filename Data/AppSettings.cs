@@ -14,7 +14,7 @@ namespace dev_library.Data
         public static string DiscordBotToken { get; set; }
         public static List<WoWAudit> WoWAudit { get; set; }
         public static GoogleSheet GoogleSheet { get; set; }
-        public static string BasePath { get; set; } = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
+        public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}/Code";
 
         public static void Initialize()
         {
