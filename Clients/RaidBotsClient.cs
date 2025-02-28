@@ -1,11 +1,12 @@
 ﻿using dev_library.Data;
+using dev_library.Data.WoW.Blizzard;
 using dev_library.Data.WoW.Raidbots;
 using dev_refined.Clients;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Security;
 using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
 
 namespace dev_library.Clients
 {
@@ -43,7 +44,7 @@ namespace dev_library.Clients
                     if (response.IsSuccessStatusCode)
                     {
                         content = await response.Content.ReadAsStringAsync();
-                       // Console.WriteLine(content);
+                        // Console.WriteLine(content);
                     }
                     else
                     {
@@ -70,6 +71,8 @@ namespace dev_library.Clients
         public async Task<List<ItemUpgrade>> GetItemUpgrades(string reportId)
         {
             var bnetClient = new BattleNetClient();
+            var items = JsonConvert.DeserializeObject<List<Item>>(File.ReadAllText("D:/Code/wowcache.json"));
+
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; // TLS 1.3 is not directly supported in .NET Framework
             var url = string.Format(RaidBotsFileUrl, reportId);
 
@@ -95,7 +98,7 @@ namespace dev_library.Clients
                     if (response.IsSuccessStatusCode)
                     {
                         content = await response.Content.ReadAsStringAsync();
-                       // Console.WriteLine(content);
+                        // Console.WriteLine(content);
                     }
                     else
                     {
@@ -119,7 +122,7 @@ namespace dev_library.Clients
             var playerName = playerRow[0];
             var baseDps = double.Parse(playerRow[1]);
 
-            var items = new List<ItemUpgrade>();
+            var itemUpgrades = new List<ItemUpgrade>();
             var token = await bnetClient.GetOAuthToken();
 
             for (int i = 2; i < rows.Length - 2; i++)
@@ -134,17 +137,32 @@ namespace dev_library.Clients
                     continue;
                 }
 
-                var itemName = await bnetClient.GetItemName(token, parts[3]);
+                var itemName = string.Empty;
+
+                var item = items.FirstOrDefault(i => i.Id == parts[3]);
+
+                if (item == null)
+                {
+                    itemName = await bnetClient.GetItemName(token, parts[3]);
+                    items.Add(new Item(itemName, parts[3]));
+                }
+                else
+                {
+                    itemName = item.Name;
+                }
+
+                File.WriteAllText("D:/Code/wowcache.json", JsonConvert.SerializeObject(items));
+                
                 var slot = Helpers.GetItemSlot(parts[6]);
 
-                items.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain));
+                itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain));
             }
 
 
             Stopwatch.Stop();
             Console.WriteLine($"Converting csv to C# object took {Stopwatch.ElapsedMilliseconds / 1000}");
 
-            return items;
+            return itemUpgrades;
         }
     }
 }

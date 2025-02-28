@@ -62,7 +62,7 @@ namespace dev_library.Clients
             await request.ExecuteAsync();
         }
 
-        private async Task WriteEntries( List<ItemUpgrade> entries)
+        private async Task WriteEntries(List<ItemUpgrade> entries)
         {
             var range = $"{AppSettings.GoogleSheet.SheetName}!A:E";
             var values = new List<IList<object>>();
