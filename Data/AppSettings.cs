@@ -15,6 +15,7 @@ namespace dev_library.Data
         public static List<WoWAudit> WoWAudit { get; set; }
         public static GoogleSheet GoogleSheet { get; set; }
         public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}Code";
+        public static ulong UserId { get; set; }
 
         public static void Initialize()
         {
@@ -29,6 +30,7 @@ namespace dev_library.Data
                 DiscordBotToken = doc.RootElement.GetProperty("DISCORD_BOT_TOKEN").ToString();
                 WoWAudit = JsonConvert.DeserializeObject<List<WoWAudit>>(doc.RootElement.GetProperty("WOWAUDIT").ToString());
                 GoogleSheet = JsonConvert.DeserializeObject<GoogleSheet>(doc.RootElement.GetProperty("OFFICERSHEET").ToString());
+                UserId = ulong.Parse(doc.RootElement.GetProperty("USERID").ToString());
             }
         }
     }
