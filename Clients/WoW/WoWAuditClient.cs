@@ -17,7 +17,7 @@ namespace dev_refined.Clients
             using var request = new HttpRequestMessage(new HttpMethod("GET"), $"{Constants.WOW_AUDIT_URL}/characters");
 
             request.Headers.TryAddWithoutValidation("accept", "application/json");
-            request.Headers.TryAddWithoutValidation("Authorization", AppSettings.WoWAudit.First(wa => wa.Guild == guild.ToUpper()).Token);
+            request.Headers.TryAddWithoutValidation("Authorization", AppSettings.WowAudit.First(wa => wa.Guild == guild.ToUpper()).Token);
 
             var response = await client.SendAsync(request).Result.Content.ReadAsStringAsync().ConfigureAwait(false);
 
@@ -30,7 +30,7 @@ namespace dev_refined.Clients
         public async Task<WoWAuditWishlistResponse> UpdateWishlist(string reportId, string guild)
         {
             using var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AppSettings.WoWAudit.First(wa => wa.Guild == guild.ToUpper()).Token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AppSettings.WowAudit.First(wa => wa.Guild == guild.ToUpper()).Token);
             var requestBody = new StringContent(JsonConvert.SerializeObject(new WoWAuditWishlistRequest(reportId)), Encoding.UTF8, ContentType.Json);
             var response = await client.PostAsync($"{Constants.WOW_AUDIT_URL}/wishlists", requestBody).Result.Content.ReadAsStringAsync().ConfigureAwait(false);
 

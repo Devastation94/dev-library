@@ -17,7 +17,7 @@ namespace dev_refined.Clients
             {
                 using var client = new HttpClient();
                 var discordBody = JsonConvert.SerializeObject(new DiscordRequest(message));
-                var response = await client.PostAsync(AppSettings.NerdHookUrl, new StringContent(discordBody, Encoding.UTF8, ContentType.Json));
+                var response = await client.PostAsync(AppSettings.Discord.Webhooks["BOTSPAM"], new StringContent(discordBody, Encoding.UTF8, ContentType.Json));
                 var responseContent = response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
@@ -53,7 +53,7 @@ namespace dev_refined.Clients
                 {
                     using var client = new HttpClient();
                     var discordBody = JsonConvert.SerializeObject(new DiscordRequest(webHookValue));
-                    var response = await client.PostAsync(AppSettings.BotHookUrl, new StringContent(discordBody, Encoding.UTF8, "application/json"));
+                    var response = await client.PostAsync(AppSettings.Discord.Webhooks["POKEMON"], new StringContent(discordBody, Encoding.UTF8, "application/json"));
                     var responseContent = response.Content.ReadAsStringAsync();
                 }
                 catch (Exception ex)

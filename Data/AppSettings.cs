@@ -5,56 +5,77 @@ namespace dev_library.Data
 {
     public static class AppSettings
     {
-        public static string BotHookUrl { get; set; }
-        public static string RaiderHookUrl { get; set; }
-        public static string GuildHookUrl { get; set; }
-        public static string NerdHookUrl { get; set; }
-        public static string BattleNetClientId { get; set; }
-        public static string BattleNetClientSecret { get; set; }
-        public static string DiscordBotToken { get; set; }
-        public static List<WoWAudit> WoWAudit { get; set; }
-        public static GoogleSheet GoogleSheet { get; set; }
+        public static DiscordSettings Discord { get; set; }
+        public static BattleNetSettings BattleNet { get; set; }
+        public static WowAuditSettings[] WowAudit { get; set; }
+        public static GoogleSheetsSettings GoogleSheet { get; set; }
         public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}Code";
-        public static ulong UserId { get; set; }
 
         public static void Initialize()
         {
-            using (var doc = JsonDocument.Parse(File.ReadAllText($"{BasePath}/appsettings.json")))
-            {
-                BotHookUrl = doc.RootElement.GetProperty("BOT_HOOK_URL").ToString();
-                RaiderHookUrl = doc.RootElement.GetProperty("RAIDER_HOOK_URL").ToString();
-                GuildHookUrl = doc.RootElement.GetProperty("GUILD_HOOK_URL").ToString();
-                NerdHookUrl = doc.RootElement.GetProperty("NERD_HOOK_URL").ToString();
-                BattleNetClientId = doc.RootElement.GetProperty("BATTLE_NET_CLIENT_ID").ToString();
-                BattleNetClientSecret = doc.RootElement.GetProperty("BATTLE_NET_CLIENT_SECRET").ToString();
-                DiscordBotToken = doc.RootElement.GetProperty("DISCORD_BOT_TOKEN").ToString();
-                WoWAudit = JsonConvert.DeserializeObject<List<WoWAudit>>(doc.RootElement.GetProperty("WOWAUDIT").ToString());
-                GoogleSheet = JsonConvert.DeserializeObject<GoogleSheet>(doc.RootElement.GetProperty("OFFICERSHEET").ToString());
-                UserId = ulong.Parse(doc.RootElement.GetProperty("USERID").ToString());
-            }
+            var json = File.ReadAllText($"{BasePath}/appsettings.json");
+            var config = JsonConvert.DeserializeObject<ConfigData>(json);
+
+            Discord = config.Discord;
+            BattleNet = config.BattleNet;
+            WowAudit = config.WowAudit;
+            GoogleSheet = config.GoogleSheet;
+        }
+
+        private class ConfigData
+        {
+            [JsonProperty("discord")]
+            public DiscordSettings Discord { get; set; }
+            [JsonProperty("battleNet")]
+            public BattleNetSettings BattleNet { get; set; }
+            [JsonProperty("wowAudit")]
+            public WowAuditSettings[] WowAudit { get; set; }
+            [JsonProperty("googleSheet")]
+            public GoogleSheetsSettings GoogleSheet { get; set; }
         }
     }
 
-    public class WoWAudit
+    public class GoogleSheetsSettings
     {
-        [JsonProperty("GUILD")]
-        public string Guild { get; set; }
-        [JsonProperty("CHANNEL_ID")]
-        public ulong ChannelId { get; set; }
-        [JsonProperty("TOKEN")]
-        public string Token { get; set; }
-
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("sheetName")]
+        public string SheetName { get; set; }
+        [JsonProperty("credentialsPath")]
+        public string CredentialsPath { get; set; }
     }
 
-    public class GoogleSheet
+    public class WowAuditSettings
     {
-        [JsonProperty("NAME")]
-        public string Name { get; set; }
-        [JsonProperty("ID")]
-        public string Id { get; set; }
-        [JsonProperty("SHEET_NAME")]
-        public string SheetName { get; set; }
-        [JsonProperty("CREDENTIALS_PATH")]
-        public string CredentialsPath { get; set; }
+        [JsonProperty("guild")]
+        public string Guild { get; set; }
+        [JsonProperty("channelId")]
+        public ulong ChannelId { get; set; }
+        [JsonProperty("token")]
+        public string Token { get; set; }
+    }
+
+    public class BattleNetSettings
+    {
+        [JsonProperty("apiUrl")]
+        public string ApiUrl { get; set; }
+        [JsonProperty("tokenUrl")]
+        public string TokenUrl { get; set; }
+        [JsonProperty("clientId")]
+        public string ClientId { get; set; }
+        [JsonProperty("clientSecret")]
+        public string ClientSecret { get; set; }
+    }
+
+    public class DiscordSettings
+    {
+        [JsonProperty("webhooks")]
+        public Dictionary<string, string> Webhooks { get; set; }
+        [JsonProperty("token")]
+        public string Token { get; set; }
+        [JsonProperty("userId")]
+        public ulong UserId { get; set; }
     }
 }
