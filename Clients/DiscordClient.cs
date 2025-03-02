@@ -12,9 +12,20 @@ namespace dev_refined.Clients
         public async Task PostWebHook(string message)
         {
             Log.Information("DiscordClient.PostWebHook: START");
-            using var client = new HttpClient();
-            var discordBody = JsonConvert.SerializeObject(new DiscordRequest(message));
-            var response = await client.PostAsync(AppSettings.NerdHookUrl, new StringContent(discordBody, Encoding.UTF8, ContentType.Json));
+
+            try
+            {
+                using var client = new HttpClient();
+                var discordBody = JsonConvert.SerializeObject(new DiscordRequest(message));
+                var response = await client.PostAsync(AppSettings.NerdHookUrl, new StringContent(discordBody, Encoding.UTF8, ContentType.Json));
+                var responseContent = response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);  
+            }
+
+           
 
             Log.Information("DiscordClient.PostWebHook: END");
             return;
@@ -38,10 +49,18 @@ namespace dev_refined.Clients
                     }
                 }
 
-                using var client = new HttpClient();
-                var discordBody = JsonConvert.SerializeObject(new DiscordRequest(webHookValue));
-                var response = await client.PostAsync(AppSettings.NerdHookUrl, new StringContent(discordBody, Encoding.UTF8, "application/json"));
-                var responseContent = response.Content.ReadAsStringAsync();
+                try
+                {
+                    using var client = new HttpClient();
+                    var discordBody = JsonConvert.SerializeObject(new DiscordRequest(webHookValue));
+                    var response = await client.PostAsync(AppSettings.BotHookUrl, new StringContent(discordBody, Encoding.UTF8, "application/json"));
+                    var responseContent = response.Content.ReadAsStringAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    throw;
+                }
             }
             return;
         }
