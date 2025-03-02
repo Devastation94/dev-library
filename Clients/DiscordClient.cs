@@ -4,8 +4,6 @@ using Newtonsoft.Json;
 using RestSharp;
 using Serilog;
 using System.Text;
-using System.Text.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace dev_refined.Clients
 {
@@ -41,7 +39,7 @@ namespace dev_refined.Clients
                 }
 
                 using var client = new HttpClient();
-                var discordBody = JsonSerializer.Serialize(new DiscordRequest(webHookValue));
+                var discordBody = JsonConvert.SerializeObject(new DiscordRequest(webHookValue));
                 var response = await client.PostAsync(AppSettings.NerdHookUrl, new StringContent(discordBody, Encoding.UTF8, "application/json"));
                 var responseContent = response.Content.ReadAsStringAsync();
             }
