@@ -158,15 +158,10 @@ namespace dev_library.Clients
                 itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain));
             }
 
-
             Stopwatch.Stop();
             Console.WriteLine($"Converting csv to C# object took {Stopwatch.ElapsedMilliseconds / 1000}");
 
-            return itemUpgrades
-               .GroupBy(i => new { i.PlayerName, i.ItemId })  
-               .Select(g => g.OrderByDescending(i => i.DpsGain).First())
-               .OrderByDescending(i => i.DpsGain) 
-               .ToList();
+            return itemUpgrades;
         }
     }
 }
