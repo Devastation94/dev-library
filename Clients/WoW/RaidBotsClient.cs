@@ -162,7 +162,11 @@ namespace dev_library.Clients
             Stopwatch.Stop();
             Console.WriteLine($"Converting csv to C# object took {Stopwatch.ElapsedMilliseconds / 1000}");
 
-            return itemUpgrades;
+            return itemUpgrades
+               .GroupBy(i => new { i.PlayerName, i.ItemId })  
+               .Select(g => g.OrderByDescending(i => i.DpsGain).First())
+               .OrderByDescending(i => i.DpsGain) 
+               .ToList();
         }
     }
 }
