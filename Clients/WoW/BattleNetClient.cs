@@ -31,7 +31,7 @@ namespace dev_refined.Clients
         public async Task<BlizzardRealmResponse> GetServerInformation(string token)
         {
             using var client = new HttpClient();
-            using var request = new HttpRequestMessage(new HttpMethod("GET"), AppSettings.BasePath + realmDataEndpoint);
+            using var request = new HttpRequestMessage(new HttpMethod("GET"), AppSettings.BattleNet.ApiUrl + realmDataEndpoint);
             request.Headers.TryAddWithoutValidation("accept", "application/json");
             request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {token}");
 
@@ -43,7 +43,7 @@ namespace dev_refined.Clients
         public async Task<string> GetItemName(string token, string itemId)
         {
             using var client = new HttpClient();
-            using var request = new HttpRequestMessage(new HttpMethod("GET"), string.Format(AppSettings.BasePath + itemNameEndpoint, itemId));
+            using var request = new HttpRequestMessage(new HttpMethod("GET"), string.Format(AppSettings.BattleNet.ApiUrl + itemNameEndpoint, itemId));
             request.Headers.TryAddWithoutValidation("accept", "application/json");
             request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {token}");
 
