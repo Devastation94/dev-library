@@ -128,8 +128,9 @@ namespace dev_library.Clients
             for (int i = 2; i < rows.Length - 2; i++)
             {
                 var parts = rows[i].Split(new char[] { '/', ' ', ',' });
+
                 var difficulty = Helpers.GetDifficulty(parts[2]);
-                var dpsGain = Math.Round(double.Parse(parts[9]) - baseDps, 0);
+                var dpsGain = Math.Round(double.Parse(parts[^5]) - baseDps, 0);
                 var trueDpsGain = difficulty == "M+" ? dpsGain * 1.1 : dpsGain;
 
                 if (dpsGain < 0)
