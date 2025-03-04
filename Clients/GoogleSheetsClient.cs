@@ -69,7 +69,7 @@ namespace dev_library.Clients
 
             foreach (var entry in entries)
             {
-                values.Add(new List<object> { entry.PlayerName, entry.Slot, entry.Difficulty, entry.ItemId, entry.DpsGain });
+                values.Add(new List<object> { entry.PlayerName, entry.Slot, entry.Difficulty, entry.ItemName, entry.DpsGain });
             }
 
             var requestBody = new ValueRange { Values = values };

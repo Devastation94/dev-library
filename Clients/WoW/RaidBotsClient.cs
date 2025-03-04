@@ -155,7 +155,19 @@ namespace dev_library.Clients
 
                 var slot = Helpers.GetItemSlot(parts[6]);
 
-                itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain));
+                var existingItemIndex = itemUpgrades.FindIndex(i => i.ItemName.ToUpper() == itemName.ToUpper());
+
+                if (existingItemIndex != -1)
+                {
+                    if (trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
+                    {
+                        itemUpgrades[existingItemIndex].DpsGain = trueDpsGain;
+                    }
+                }
+                else
+                {
+                    itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain));
+                }               
             }
 
             Stopwatch.Stop();

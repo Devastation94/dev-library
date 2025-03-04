@@ -7,7 +7,7 @@
             PlayerName = player;
             Slot = slot;
             Difficulty = difficulty;
-            ItemId = itemName;
+            ItemName = itemName;
 
             DpsGain = dpsGain;
         }
@@ -15,7 +15,7 @@
         public string PlayerName { get; set; }
         public string Slot { get; set; }
         public string Difficulty { get; set; }
-        public string ItemId { get; set; }
+        public string ItemName { get; set; }
         public double DpsGain { get; set; }
     }
 }
