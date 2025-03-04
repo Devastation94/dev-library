@@ -19,7 +19,7 @@ namespace dev_refined
             {
                 using (var client = new HttpClient())
                 {
-                    var usersToPing = new[] { "217441514161176577", "154306391400513536", "178295063808311297" };
+                    var usersToPing = new[] { "217441514161176577", "154306391400513536", "178295063808311297", "285277811348996097" };
 
                     Log.Information("");
 
@@ -29,7 +29,7 @@ namespace dev_refined
 
                     var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
 
-                    if (realmData.Status.Name.ToUpper() != cachedData.Status.Name.ToUpper())
+                    if (realmData.Status.Name.ToUpper() != cachedData.Status.Name.ToUpper() && realmData.Status.Name.ToUpper() == "UP")
                     {
                         Log.Information($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
                         var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
