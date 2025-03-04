@@ -19,6 +19,8 @@ namespace dev_refined
             {
                 using (var client = new HttpClient())
                 {
+                    var usersToPing = new[] { "217441514161176577", "154306391400513536", "178295063808311297" };
+
                     Log.Information("");
 
                     var token = await battleNetClient.GetOAuthToken();
@@ -31,7 +33,7 @@ namespace dev_refined
                     {
                         Log.Information($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
                         var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
-                        await discordClient.PostWebHook(content);
+                        await discordClient.PostWebHook(content + string.Join(" ", usersToPing.Select(user => $"<@{user}>")));
                         File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
                     }
                     else

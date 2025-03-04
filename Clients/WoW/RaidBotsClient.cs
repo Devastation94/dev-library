@@ -167,7 +167,7 @@ namespace dev_library.Clients
                 else
                 {
                     itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain));
-                }               
+                }
             }
 
             Stopwatch.Stop();
