@@ -13,8 +13,6 @@ namespace dev_library.Clients
     public class RaidBotsClient
     {
         private static string RaidBotsFileUrl = "https://raidbots.com/reports/{0}/data.csv";
-        private const string MAX_HERO_ILVL = "665";
-        private static Stopwatch Stopwatch = new Stopwatch();
         private const string cacheName = "wowcache.json";
         public async Task<bool> IsValidReport(string url)
         {
@@ -30,8 +28,6 @@ namespace dev_library.Clients
             };
 
             var content = string.Empty;
-
-            Stopwatch.Restart();
 
             using (var httpClient = new HttpClient(handler))
             {
@@ -56,9 +52,6 @@ namespace dev_library.Clients
                     Console.WriteLine($"Exception: {ex.Message}");
                 }
             }
-
-            Stopwatch.Stop();
-            Console.WriteLine($"IsValidReport took {Stopwatch.ElapsedMilliseconds / 1000}");
 
             if (content.ToUpper().Contains("HERO 6/6"))
             {
@@ -85,7 +78,6 @@ namespace dev_library.Clients
             };
 
             var content = string.Empty;
-            Stopwatch.Restart();
 
             using (var httpClient = new HttpClient(handler))
             {
@@ -110,10 +102,6 @@ namespace dev_library.Clients
                     Console.WriteLine($"Exception: {ex.Message}");
                 }
             }
-            Stopwatch.Stop();
-            Console.WriteLine($"Getting csv took {Stopwatch.ElapsedMilliseconds / 1000}");
-
-            Stopwatch.Restart();
 
             content = content.Replace('\t', ',');
 
@@ -167,12 +155,16 @@ namespace dev_library.Clients
                 }
                 else
                 {
+                    //var peopleWhoBrokeMyShit = new[] { "Turm", "Tera" };
+
+                    //if (peopleWhoBrokeMyShit.Any(pwbms => playerName.StartsWith(pwbms)))
+                    //{
+                    //    trueDpsGain *= .5;
+                    //}
+
                     itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain));
                 }
             }
-
-            Stopwatch.Stop();
-            Console.WriteLine($"Converting csv to C# object took {Stopwatch.ElapsedMilliseconds / 1000}");
 
             return itemUpgrades;
         }
