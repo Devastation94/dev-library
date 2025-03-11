@@ -94,7 +94,7 @@ namespace dev_library.Clients
 
             // Step 4: Clear & Update Sheet
             await ClearSheet();
-            await WriteEntries(sheetData);
+            await WriteEntries(sheetData.OrderByDescending(sd => sd.DpsGain).ToList());
 
             return true;
         }
