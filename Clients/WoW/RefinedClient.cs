@@ -60,7 +60,7 @@ namespace dev_refined
 
             table += $"\n|--------------|----------|------|\n```";
 
-            DiscordClient.PostWebHook(table);
+            DiscordClient.PostWebHook(table, "BOTSPAM");
             Log.Information("RefinedClient.PostBadPlayers: END");
         }
     }

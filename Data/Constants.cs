@@ -1,6 +1,6 @@
 ﻿namespace dev_refined.Data
 {
-    public class Constants
+    public static class Constants
     {
         public const string RAIDER_IO_URL = "https://raider.io/api/v1";
         public const string WOW_AUDIT_URL = "https://wowaudit.com/v1";

@@ -33,7 +33,7 @@ namespace dev_refined
                     {
                         Log.Information($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
                         var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
-                        await discordClient.PostWebHook(content + string.Join(" ", usersToPing.Select(user => $"<@{user}>")));
+                        await discordClient.PostWebHook(content + string.Join(" ", usersToPing.Select(user => $"<@{user}>")), "GUILDCHAT");
                         File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
                     }
                     else

@@ -9,7 +9,7 @@ namespace dev_refined.Clients
 {
     public class DiscordClient
     {
-        public async Task PostWebHook(string message)
+        public async Task PostWebHook(string message, string webHook)
         {
             Log.Information("DiscordClient.PostWebHook: START");
 
@@ -17,7 +17,7 @@ namespace dev_refined.Clients
             {
                 using var client = new HttpClient();
                 var discordBody = JsonConvert.SerializeObject(new DiscordRequest(message));
-                var response = await client.PostAsync(AppSettings.Discord.Webhooks["BOTSPAM"], new StringContent(discordBody, Encoding.UTF8, ContentType.Json));
+                var response = await client.PostAsync(AppSettings.Discord.Webhooks[webHook], new StringContent(discordBody, Encoding.UTF8, ContentType.Json));
                 var responseContent = response.Content.ReadAsStringAsync();
             }
             catch (Exception ex)
