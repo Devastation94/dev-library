@@ -36,7 +36,7 @@ namespace dev_library.Clients
 
         private async Task<List<ItemUpgrade>> ReadEntries()
         {
-            var range = $"{AppSettings.GoogleSheet.SheetName}!A:E"; // Assuming headers are in row 1
+            var range = $"{AppSettings.GoogleSheet.SheetName}!A:F"; // Assuming headers are in row 1
             var request = SheetsService.Spreadsheets.Values.Get(AppSettings.GoogleSheet.Id, range);
             var response = await request.ExecuteAsync();
 
@@ -47,7 +47,7 @@ namespace dev_library.Clients
             {
                 foreach (var row in values)
                 {
-                    if (row.Count < 5) continue; // Skip incomplete rows
+                    if (row.Count < 6) continue; // Skip incomplete rows
 
                     var lastUpdated = string.IsNullOrWhiteSpace(row[5].ToString()) ? DateTime.MinValue : DateTime.Parse(row[5].ToString());
 
@@ -67,12 +67,12 @@ namespace dev_library.Clients
 
         private async Task WriteEntries(List<ItemUpgrade> entries)
         {
-            var range = $"{AppSettings.GoogleSheet.SheetName}!A:E";
+            var range = $"{AppSettings.GoogleSheet.SheetName}!A:F";
             var values = new List<IList<object>>();
 
             foreach (var entry in entries)
             {
-                values.Add(new List<object> { entry.PlayerName, entry.Slot, entry.Difficulty, entry.ItemName, entry.DpsGain });
+                values.Add(new List<object> { entry.PlayerName, entry.Slot, entry.Difficulty, entry.ItemName, entry.DpsGain, entry.LastUpdated });
             }
 
             var requestBody = new ValueRange { Values = values };
