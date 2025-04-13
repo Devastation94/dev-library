@@ -9,15 +9,14 @@ namespace dev_library.Data
             switch (difficulty.ToUpper())
             {
                 case "RAID-MYTHIC":
-                    return "MYTHIC";
+                    return "Mythic Raid";
                 case "RAID-HEROIC":
-                    return "HEROIC";
+                    return "Heroic Raid";
+                case "DUNGEON-MYYTHIC10":
+                    return "'+10 Dungeon";
+                case "DUNGEON-MYTHIC-WEEKLY10":
+                    return "'+10 Vault";
                 default:
-                    if (difficulty.ToUpper().StartsWith("DUNGEON-MYTHIC"))
-                    {
-                        return "M+";
-                    }
-
                     return string.Empty;
             }
         }
@@ -28,18 +27,18 @@ namespace dev_library.Data
             {
                 case "FINGER1":
                 case "FINGER2":
-                    return "RING";
+                    return "Ring";
                 case "TRINKET1":
                 case "TRINKET2":
-                    return "TRINKET";
+                    return "Trinket";
                 case "MAIN_HAND":
-                    return "WEAPON";
+                    return "Weapon";
                 case "OFF_HAND":
-                    return "OFFHAND";
+                    return "Offhand";
                 case "MISCELLANEOUS":
-                    return "CURIO";
+                    return "Curio";
                 default:
-                    return itemSlot.ToUpper();
+                    return itemSlot;
             }
         }
 
