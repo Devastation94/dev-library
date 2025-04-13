@@ -66,6 +66,8 @@ namespace dev_library.Clients
             var bnetClient = new BattleNetClient();
             var items = JsonConvert.DeserializeObject<List<Item>>(File.ReadAllText($"{AppSettings.BasePath}/{cacheName}"));
 
+            var lastUpdated = DateTime.Now;
+
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; // TLS 1.3 is not directly supported in .NET Framework
             var url = string.Format(RaidBotsFileUrl, reportId);
 
@@ -121,6 +123,7 @@ namespace dev_library.Clients
                 var dpsGain = Math.Round(double.Parse(parts[^5]) - baseDps, 0);
                 var trueDpsGain = difficulty == "M+" ? dpsGain * 1.1 : dpsGain;
 
+
                 if (dpsGain < 0)
                 {
                     continue;
@@ -162,7 +165,7 @@ namespace dev_library.Clients
                     //    trueDpsGain *= .5;
                     //}
 
-                    itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain));
+                    itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated));
                 }
             }
 

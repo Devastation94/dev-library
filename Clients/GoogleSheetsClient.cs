@@ -49,7 +49,10 @@ namespace dev_library.Clients
                 {
                     if (row.Count < 5) continue; // Skip incomplete rows
 
-                    entries.Add(new ItemUpgrade(row[0].ToString(), row[1].ToString(), row[2].ToString(), row[3].ToString(), double.Parse(row[4].ToString())));
+                    var lastUpdated = string.IsNullOrWhiteSpace(row[5].ToString()) ? DateTime.MinValue : DateTime.Parse(row[5].ToString());
+
+                    entries.Add(new ItemUpgrade(row[0].ToString(), row[1].ToString(), row[2].ToString(), row[3].ToString(), 
+                        double.Parse(row[4].ToString()), lastUpdated));
                 }
             }
             return entries;
