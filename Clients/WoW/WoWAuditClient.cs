@@ -39,7 +39,7 @@ namespace dev_refined.Clients
         {
             var response = "";
 
-            Console.WriteLine("Start updating wishlist");
+            Console.WriteLine("WoWAuditClient.UpdateWishlist: START");
             try
             {
                 using var client = new HttpClient();
@@ -53,6 +53,10 @@ namespace dev_refined.Clients
                 Console.WriteLine("Failed to update wowaudit wishlist");
                 Console.WriteLine(response);
                 throw;
+            }
+            finally
+            {
+                Console.WriteLine("WoWAuditClient.UpdateWishlist: END");
             }
         }
     }

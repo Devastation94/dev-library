@@ -16,7 +16,8 @@ namespace dev_library.Clients
         private const string cacheName = "wowcache.json";
         public async Task<bool> IsValidReport(string url)
         {
-            var bnetClient = new BattleNetClient();
+            Console.WriteLine("RaidBotsClients.IsValidReport: START");
+
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; // TLS 1.3 is not directly supported in .NET Framework
 
             var handler = new SocketsHttpHandler
@@ -58,11 +59,14 @@ namespace dev_library.Clients
                 return true;
             }
 
+            Console.WriteLine("RaidBotsClients.IsValidReport: END");
             return false;
         }
 
         public async Task<List<ItemUpgrade>> GetItemUpgrades(string reportId)
         {
+            Console.WriteLine("RaidBotsClients.GetItemUpgrades: START");
+
             var bnetClient = new BattleNetClient();
             var items = JsonConvert.DeserializeObject<List<Item>>(File.ReadAllText($"{AppSettings.BasePath}/{cacheName}"));
 
@@ -168,6 +172,8 @@ namespace dev_library.Clients
                     itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated));
                 }
             }
+
+            Console.WriteLine("RaidBotsClients.GetItemUpgrades: END");
 
             return itemUpgrades;
         }

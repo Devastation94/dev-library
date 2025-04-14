@@ -36,6 +36,7 @@ namespace dev_library.Clients
 
         private async Task<List<ItemUpgrade>> ReadEntries()
         {
+            Console.WriteLine("GoogleSheetsClient.ReadEntries: START");
             var range = $"{AppSettings.GoogleSheet.SheetName}!A:F"; // Assuming headers are in row 1
             var request = SheetsService.Spreadsheets.Values.Get(AppSettings.GoogleSheet.Id, range);
             var response = await request.ExecuteAsync();
@@ -47,7 +48,9 @@ namespace dev_library.Clients
             {
                 foreach (var row in values)
                 {
-                    if (row.Count < 6) continue; // Skip incomplete rows
+                    if (row.Count < 6 || string.IsNullOrWhiteSpace(row[0].ToString()) || string.IsNullOrWhiteSpace(row[1].ToString()) ||
+                        string.IsNullOrWhiteSpace(row[2].ToString()) || string.IsNullOrWhiteSpace(row[3].ToString()) ||
+                        string.IsNullOrWhiteSpace(row[4].ToString())) continue; // Skip incomplete rows
 
                     var lastUpdated = string.IsNullOrWhiteSpace(row[5].ToString()) ? DateTime.MinValue : DateTime.Parse(row[5].ToString());
 
@@ -55,6 +58,7 @@ namespace dev_library.Clients
                         double.Parse(row[4].ToString()), lastUpdated));
                 }
             }
+            Console.WriteLine("GoogleSheetsClient.ReadEntries: END");
             return entries;
         }
 
@@ -67,6 +71,7 @@ namespace dev_library.Clients
 
         private async Task WriteEntries(List<ItemUpgrade> entries)
         {
+            Console.WriteLine("GoogleSheetsClient.WriteEntries: START");
             var range = $"{AppSettings.GoogleSheet.SheetName}!A:F";
             var values = new List<IList<object>>();
 
@@ -79,10 +84,13 @@ namespace dev_library.Clients
             var request = SheetsService.Spreadsheets.Values.Update(requestBody, AppSettings.GoogleSheet.Id, range);
             request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
             await request.ExecuteAsync();
+            Console.WriteLine("GoogleSheetsClient.WriteEntries: END");
         }
 
         public async Task<bool> UpdateSheet(List<ItemUpgrade> newEntries)
         {
+            Console.WriteLine("GoogleSheetsClient.UpdateSheet: START");
+
             // Step 1: Read current data from the sheet
             var sheetData = await ReadEntries();
 
@@ -99,6 +107,7 @@ namespace dev_library.Clients
             await ClearSheet();
             await WriteEntries(sheetData.OrderByDescending(sd => sd.DpsGain).ToList());
 
+            Console.WriteLine("GoogleSheetsClient.UpdateSheet: END");
             return true;
         }
     }
