@@ -13,9 +13,9 @@ namespace dev_library.Data
                 case "RAID-HEROIC":
                     return "Heroic Raid";
                 case "DUNGEON-MYYTHIC10":
-                    return "'+10 Dungeon";
+                    return "Dungeon";
                 case "DUNGEON-MYTHIC-WEEKLY10":
-                    return "'+10 Vault";
+                    return "Dungeon Vault";
                 default:
                     return string.Empty;
             }
