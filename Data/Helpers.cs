@@ -26,11 +26,9 @@ namespace dev_library.Data
             switch (itemSlot.ToUpper())
             {
                 case "FINGER1":
+                    return "Ring1";
                 case "FINGER2":
-                    return "Ring";
-                case "TRINKET1":
-                case "TRINKET2":
-                    return "Trinket";
+                    return "Ring2";
                 case "MAIN_HAND":
                     return "Weapon";
                 case "OFF_HAND":
