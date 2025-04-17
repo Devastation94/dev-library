@@ -12,7 +12,7 @@ namespace dev_library.Data
                     return "Mythic Raid";
                 case "RAID-HEROIC":
                     return "Heroic Raid";
-                case "DUNGEON-MYYTHIC10":
+                case "DUNGEON-MYTHIC10":
                     return "Dungeon";
                 case "DUNGEON-MYTHIC-WEEKLY10":
                     return "Dungeon Vault";
