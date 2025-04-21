@@ -121,7 +121,7 @@ namespace dev_library.Clients
 
             for (int i = 2; i < rows.Length - 2; i++)
             {
-                var parts = rows[i].Split(new char[] { '/', ' ', ',' });
+                var parts = rows[i].Split(new char[] { '/', ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
 
                 var difficulty = Helpers.GetDifficulty(parts[2]);
                 var dpsGain = Math.Round(double.Parse(parts[^5]) - baseDps, 0);
