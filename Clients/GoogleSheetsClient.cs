@@ -55,7 +55,7 @@ namespace dev_library.Clients
                     var lastUpdated = string.IsNullOrWhiteSpace(row[5].ToString()) ? DateTime.MinValue : DateTime.Parse(row[5].ToString());
 
                     entries.Add(new ItemUpgrade(row[0].ToString(), row[1].ToString(), row[2].ToString(), row[3].ToString(), 
-                        int.Parse(row[4].ToString()), lastUpdated));
+                        double.Parse(row[4].ToString()), lastUpdated));
                 }
             }
             Console.WriteLine("GoogleSheetsClient.ReadEntries: END");
