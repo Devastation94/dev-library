@@ -114,21 +114,21 @@ namespace dev_library.Clients
             var rows = content.Split('\n');
             var playerRow = rows[1].Split(new char[] { '/', ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
             var playerName = playerRow[0];
-            var baseDps = double.Parse(playerRow[1]);
+            var baseDps = int.Parse(playerRow[1].Split('.')[0]);
 
             var itemUpgrades = new List<ItemUpgrade>();
             var token = await bnetClient.GetOAuthToken();
 
             for (int i = 2; i < rows.Length - 2; i++)
             {
-                var parts = rows[i].Split(new char[] { '/', ' ', ',' });
+                var parts = rows[i].Split(new char[] { '/', ' ', ',' },StringSplitOptions.RemoveEmptyEntries);
 
                 var difficulty = Helpers.GetDifficulty(parts[2]);
-                var dpsGain = Math.Round(double.Parse(parts[^5]) - baseDps, 0);
-                var trueDpsGain = difficulty == "M+" ? dpsGain * 1.1 : dpsGain;
 
+                var test = parts[^5];
+                var dpsGain = double.Parse(parts[^5]) - baseDps;
 
-                if (dpsGain < 0)
+                if (dpsGain < 5000)
                 {
                     continue;
                 }
@@ -155,9 +155,9 @@ namespace dev_library.Clients
 
                 if (existingItemIndex != -1)
                 {
-                    if (trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
+                    if (dpsGain > itemUpgrades[existingItemIndex].DpsGain)
                     {
-                        itemUpgrades[existingItemIndex].DpsGain = trueDpsGain;
+                        itemUpgrades[existingItemIndex].DpsGain = Convert.ToInt32(dpsGain);
                     }
                 }
                 else
@@ -169,7 +169,7 @@ namespace dev_library.Clients
                     //    trueDpsGain *= .5;
                     //}
 
-                    itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated));
+                    itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, Convert.ToInt32(dpsGain), lastUpdated));
                 }
             }
 

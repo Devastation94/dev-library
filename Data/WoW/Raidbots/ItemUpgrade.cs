@@ -2,7 +2,7 @@
 {
     public class ItemUpgrade
     {
-        public ItemUpgrade(string player, string slot, string difficulty, string itemName, double dpsGain, DateTime lastUpdated)
+        public ItemUpgrade(string player, string slot, string difficulty, string itemName, int dpsGain, DateTime lastUpdated)
         {
             PlayerName = player;
             Slot = slot;
@@ -16,7 +16,7 @@
         public string Slot { get; set; }
         public string Difficulty { get; set; }
         public string ItemName { get; set; }
-        public double DpsGain { get; set; }
+        public int DpsGain { get; set; }
         public DateTime LastUpdated { get; set; }
     }
 }
