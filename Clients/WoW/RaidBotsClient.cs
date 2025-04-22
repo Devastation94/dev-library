@@ -151,24 +151,14 @@ namespace dev_library.Clients
 
                 var slot = Helpers.GetItemSlot(parts[6]);
 
-                var existingItemIndex = itemUpgrades.FindIndex(i => i.ItemName.ToUpper() == itemName.ToUpper());
+                var existingItemIndex = itemUpgrades.FindIndex(i => i.Slot.ToUpper() == slot.ToUpper());
 
-                if (existingItemIndex != -1)
+                if (existingItemIndex != -1 && trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
                 {
-                    if (trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
-                    {
-                        itemUpgrades[existingItemIndex].DpsGain = trueDpsGain;
-                    }
+                    itemUpgrades[existingItemIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
                 }
                 else
                 {
-                    //var peopleWhoBrokeMyShit = new[] { "Turm", "Tera" };
-
-                    //if (peopleWhoBrokeMyShit.Any(pwbms => playerName.StartsWith(pwbms)))
-                    //{
-                    //    trueDpsGain *= .5;
-                    //}
-
                     itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated));
                 }
             }

@@ -65,7 +65,7 @@ namespace dev_library.Clients
         private async Task ClearSheet()
         {
             var requestBody = new ClearValuesRequest();
-            var request = SheetsService.Spreadsheets.Values.Clear(requestBody, AppSettings.GoogleSheet.Id, $"{AppSettings.GoogleSheet.SheetName}!A:E");
+            var request = SheetsService.Spreadsheets.Values.Clear(requestBody, AppSettings.GoogleSheet.Id, $"{AppSettings.GoogleSheet.SheetName}!A:F");
             await request.ExecuteAsync();
         }
 
