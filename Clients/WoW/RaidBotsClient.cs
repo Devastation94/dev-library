@@ -153,9 +153,12 @@ namespace dev_library.Clients
 
                 var existingItemIndex = itemUpgrades.FindIndex(i => i.Slot.ToUpper() == slot.ToUpper());
 
-                if (existingItemIndex != -1 && trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
+                if (existingItemIndex != -1)
                 {
-                    itemUpgrades[existingItemIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
+                    if (trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
+                    {
+                        itemUpgrades[existingItemIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
+                    }
                 }
                 else
                 {
