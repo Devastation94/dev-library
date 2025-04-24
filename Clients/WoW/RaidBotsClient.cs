@@ -162,7 +162,10 @@ namespace dev_library.Clients
                 }
                 else
                 {
-                    itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated));
+                    if (!itemUpgrades.Any(iu => iu.ItemName == itemName))
+                    {
+                        itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated));
+                    }
                 }
             }
 
