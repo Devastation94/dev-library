@@ -165,7 +165,7 @@ namespace dev_library.Clients
                     Console.WriteLine($"Duplicate item found {itemName} changing dps gain to {trueDpsGain}");
                     itemUpgrades[existingItemIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
                 }
-                else if (existingSlotIndex != -1 && trueDpsGain > itemUpgrades[existingSlotIndex].DpsGain)
+                else if (existingSlotIndex != -1 && existingItemIndex == -1 && trueDpsGain > itemUpgrades[existingSlotIndex].DpsGain)
                 {
                     Console.WriteLine($"Duplicate item found {itemName} changing dps gain to {trueDpsGain}");
                     itemUpgrades[existingSlotIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
