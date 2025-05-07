@@ -8,5 +8,10 @@
             int padLeft = spaces / 2 + str.Length;
             return str.PadLeft(padLeft, character).PadRight(length, character);
         }
+
+        public static string ToTitleCase(this string str)
+        {
+            return str[0].ToString().ToUpper() + str[1..];
+        }
     }
 }
