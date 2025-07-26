@@ -9,6 +9,8 @@ namespace dev_library.Data
         public static BattleNetSettings BattleNet { get; set; }
         public static WowAuditSettings[] WowAudit { get; set; }
         public static GoogleSheetsSettings GoogleSheet { get; set; }
+
+        public static FitbitSettings FitbitSettings { get; set; }
         public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}Code";
 
         public static void Initialize()
@@ -20,6 +22,7 @@ namespace dev_library.Data
             BattleNet = config.BattleNet;
             WowAudit = config.WowAudit;
             GoogleSheet = config.GoogleSheet;
+            FitbitSettings = config.FitbitSettings;
         }
 
         private class ConfigData
@@ -32,6 +35,8 @@ namespace dev_library.Data
             public WowAuditSettings[] WowAudit { get; set; }
             [JsonProperty("googleSheet")]
             public GoogleSheetsSettings GoogleSheet { get; set; }
+            [JsonProperty("fitbit")]
+            public FitbitSettings FitbitSettings { get; set; }
         }
     }
 
@@ -77,5 +82,17 @@ namespace dev_library.Data
         public string Token { get; set; }
         [JsonProperty("userId")]
         public ulong UserId { get; set; }
+    }
+
+    public class FitbitSettings
+    {
+        [JsonProperty("clientId")]
+        public string ClientId { get; set; }
+        [JsonProperty("clientSecret")]
+        public string ClientSecret { get; set; }
+        [JsonProperty("webHooKUrl")]
+        public string WebHookUrl { get; set; }
+        [JsonProperty("authorizationCode")]
+        public string AuthorizationCode { get; set; }
     }
 }

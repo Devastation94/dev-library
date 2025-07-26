@@ -55,7 +55,7 @@ namespace dev_library.Clients
                 }
             }
 
-            if (content.ToUpper().Contains("HERO 6/6") || content.ToUpper().Contains("MYTH 6/6"))
+            if (content.ToUpper().Contains("HERO 8/8") || content.ToUpper().Contains("MYTH 8/8"))
             {
                 return true;
             }

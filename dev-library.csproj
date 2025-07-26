@@ -15,4 +15,8 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Fitness\" />
+  </ItemGroup>
+
 </Project>

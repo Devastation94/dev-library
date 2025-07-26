@@ -97,8 +97,9 @@ namespace dev_library.Clients
             // Step 2: Remove existing entries that match "Player Name" and "Difficulty"
             sheetData.RemoveAll(existing =>
                 newEntries.Any(newEntry =>
-                    existing.PlayerName.ToUpper() == newEntry.PlayerName.ToUpper() &&
-                    existing.Difficulty.ToUpper() == newEntry.Difficulty.ToUpper()));
+                    (existing.PlayerName.ToUpper() == newEntry.PlayerName.ToUpper() &&
+                    existing.Difficulty.ToUpper() == newEntry.Difficulty.ToUpper()) || 
+                    existing.LastUpdated < DateTime.Now.AddDays(-14)));
 
             // Step 3: Append new data
             sheetData.AddRange(newEntries);
