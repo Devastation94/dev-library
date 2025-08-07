@@ -55,7 +55,7 @@ namespace dev_library.Clients
                 }
             }
 
-            if (content.ToUpper().Contains("HERO 8/8") || content.ToUpper().Contains("MYTH 8/8"))
+            if (content.ToUpper().Contains("HERO 6/6") || content.ToUpper().Contains("MYTH 6/6"))
             {
                 return true;
             }
@@ -162,8 +162,8 @@ namespace dev_library.Clients
                 }
                 else if (existingItemIndex != -1 && trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
                 {
-                    Console.WriteLine($"Duplicate item found {itemName} changing dps gain to {trueDpsGain}");
-                    itemUpgrades[existingItemIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
+                    //Console.WriteLine($"Duplicate item found {itemName} changing dps gain to {trueDpsGain}");
+                    //itemUpgrades[existingItemIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
                 }
                 else if (existingSlotIndex != -1 && existingItemIndex == -1 && trueDpsGain > itemUpgrades[existingSlotIndex].DpsGain)
                 {
