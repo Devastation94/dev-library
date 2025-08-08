@@ -64,7 +64,7 @@ namespace dev_library.Clients
             return false;
         }
 
-        public async Task<List<ItemUpgrade>> GetItemUpgrades(string reportId)
+        public async Task<List<ItemUpgrade>> GetItemUpgrades(List<ItemUpgrade> itemUpgrades, string reportId)
         {
             Console.WriteLine("RaidBotsClients.GetItemUpgrades: START");
 
@@ -117,7 +117,6 @@ namespace dev_library.Clients
             var playerName = playerRow[0].ToTitleCase();
             var baseDps = double.Parse(playerRow[1]);
 
-            var itemUpgrades = new List<ItemUpgrade>();
             var token = await bnetClient.GetOAuthToken();
 
             for (int i = 2; i < rows.Length - 2; i++)
@@ -151,26 +150,37 @@ namespace dev_library.Clients
 
                 var slot = Helpers.GetItemSlot(parts[6]);
 
+                var itemUpgrade = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
+
                 var existingSlotIndex = itemUpgrades.FindIndex(i => i.Slot.ToUpper().Trim() == slot.ToUpper().Trim());
                 var existingItemIndex = itemUpgrades.FindIndex(i => i.ItemName.ToUpper().Trim() == itemName.ToUpper().Trim());
-                var test = JsonConvert.SerializeObject(itemUpgrades);
 
-                if (existingItemIndex == -1 && existingSlotIndex == -1)
+                if (existingItemIndex != -1 && trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
                 {
-                    Console.WriteLine($"Adding item {itemName} to upgrades with {trueDpsGain} dps gain");
-                    itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated));
+                    itemUpgrades[existingItemIndex] = itemUpgrade;
                 }
-                else if (existingItemIndex != -1 && trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
+                else
                 {
-                    //Console.WriteLine($"Duplicate item found {itemName} changing dps gain to {trueDpsGain}");
-                    //itemUpgrades[existingItemIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
-                }
-                else if (existingSlotIndex != -1 && existingItemIndex == -1 && trueDpsGain > itemUpgrades[existingSlotIndex].DpsGain)
-                {
-                    Console.WriteLine($"Duplicate item found {itemName} changing dps gain to {trueDpsGain}");
-                    itemUpgrades[existingSlotIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
+                    itemUpgrades.Add(itemUpgrade);
                 }
             }
+
+            itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.ItemName }).Select(g => g.First()).ToList();
+            itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.Slot }).Select(g => g.First()).ToList();
+
+            //var existingSlotIndex = itemUpgrades.FindIndex(i => i.Slot.ToUpper().Trim() == slot.ToUpper().Trim());
+            //var existingItemIndex = itemUpgrades.FindIndex(i => i.ItemName.ToUpper().Trim() == itemName.ToUpper().Trim());
+
+            //if (existingItemIndex == -1 && existingSlotIndex == -1)
+            //{
+            //    Console.WriteLine($"Adding item {itemName} to upgrades with {trueDpsGain} dps gain");
+            //    itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated));
+            //}
+            //else if (existingSlotIndex != -1 && existingItemIndex != -1 && trueDpsGain > itemUpgrades[existingSlotIndex].DpsGain)
+            //{
+            //    Console.WriteLine($"Duplicate item found {itemName} changing dps gain to {trueDpsGain}");
+            //    itemUpgrades[existingSlotIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
+            //}
 
             Console.WriteLine("RaidBotsClients.GetItemUpgrades: END");
 

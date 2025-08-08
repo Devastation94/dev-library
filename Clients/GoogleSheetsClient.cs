@@ -106,6 +106,9 @@ namespace dev_library.Clients
 
             // Step 4: Clear & Update Sheet
             await ClearSheet();
+
+            sheetData = sheetData.GroupBy(sd => new { sd.PlayerName, sd.Slot, sd.Difficulty, sd.ItemName }).Select(g => g.First()).ToList();
+
             await WriteEntries(sheetData.OrderByDescending(sd => sd.DpsGain).ToList());
 
             Console.WriteLine("GoogleSheetsClient.UpdateSheet: END");
