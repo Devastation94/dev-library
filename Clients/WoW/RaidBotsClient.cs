@@ -127,6 +127,15 @@ namespace dev_library.Clients
                 var dpsGain = Math.Round(double.Parse(parts[^5]) - baseDps, 0);
                 var trueDpsGain = difficulty == "M+" ? dpsGain * 1.1 : dpsGain;
 
+                //if (playerName.ToUpper().Contains("BOMBA"))
+                //{
+                //    trueDpsGain *= 5;
+                //}
+                //else if (playerName.ToUpper().Contains("DICE")) 
+                //{
+                //    trueDpsGain *= .5;
+                //}
+
                 if (dpsGain < 0)
                 {
                     continue;
@@ -165,8 +174,8 @@ namespace dev_library.Clients
                 }
             }
 
-            itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.ItemName, sd.PlayerName, sd.Difficulty }).Select(g => g.First()).ToList();
-            itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.Slot, sd.PlayerName, sd.Difficulty }).Select(g => g.First()).ToList();
+            //itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.ItemName, sd.PlayerName, sd.Difficulty }).Select(g => g.First()).ToList();
+            //itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.Slot, sd.PlayerName, sd.Difficulty }).Select(g => g.First()).ToList();
 
             //var existingSlotIndex = itemUpgrades.FindIndex(i => i.Slot.ToUpper().Trim() == slot.ToUpper().Trim());
             //var existingItemIndex = itemUpgrades.FindIndex(i => i.ItemName.ToUpper().Trim() == itemName.ToUpper().Trim());
