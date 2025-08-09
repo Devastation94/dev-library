@@ -165,8 +165,8 @@ namespace dev_library.Clients
                 }
             }
 
-            itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.ItemName }).Select(g => g.First()).ToList();
-            itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.Slot }).Select(g => g.First()).ToList();
+            itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.ItemName, sd.PlayerName, sd.Difficulty }).Select(g => g.First()).ToList();
+            itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.Slot, sd.PlayerName, sd.Difficulty }).Select(g => g.First()).ToList();
 
             //var existingSlotIndex = itemUpgrades.FindIndex(i => i.Slot.ToUpper().Trim() == slot.ToUpper().Trim());
             //var existingItemIndex = itemUpgrades.FindIndex(i => i.ItemName.ToUpper().Trim() == itemName.ToUpper().Trim());
