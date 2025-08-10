@@ -11,6 +11,7 @@ namespace dev_library.Data
         public static GoogleSheetsSettings GoogleSheet { get; set; }
 
         public static FitbitSettings FitbitSettings { get; set; }
+        public static GptSettings GptSettings {get;set;}
         public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}Code";
 
         public static void Initialize()
@@ -23,6 +24,7 @@ namespace dev_library.Data
             WowAudit = config.WowAudit;
             GoogleSheet = config.GoogleSheet;
             FitbitSettings = config.FitbitSettings;
+            GptSettings = config.GptSettings;
         }
 
         private class ConfigData
@@ -37,6 +39,8 @@ namespace dev_library.Data
             public GoogleSheetsSettings GoogleSheet { get; set; }
             [JsonProperty("fitbit")]
             public FitbitSettings FitbitSettings { get; set; }
+            [JsonProperty("gpt")]
+            public GptSettings GptSettings { get; set; }
         }
     }
 
@@ -94,5 +98,16 @@ namespace dev_library.Data
         public string WebHookUrl { get; set; }
         [JsonProperty("authorizationCode")]
         public string AuthorizationCode { get; set; }
+    }
+    public class GptSettings
+    {
+        [JsonProperty("apiToken")]
+        public string ApiToken { get; set; }
+        [JsonProperty("prefix")]
+        public string Prefix { get; set; }
+        [JsonProperty("suffix")]
+        public string Suffix { get; set; }
+        [JsonProperty("allowedRoles")]
+        public string AllowedRoles { get; set; }
     }
 }
