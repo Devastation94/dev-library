@@ -15,6 +15,8 @@ namespace dev_library.Clients
         {
             var client = new ChatClient("gpt-5-nano", AppSettings.GptSettings.ApiToken);
 
+            message = message.Replace("<@1305976068053794846>", "");
+
             var suffix = $"The level is {aggresionLevel}";
 
             ChatCompletion completion = client.CompleteChat($"{AppSettings.GptSettings.Prefix} {message} {AppSettings.GptSettings.Suffix} {aggresionLevel}");
