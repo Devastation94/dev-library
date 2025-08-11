@@ -121,57 +121,66 @@ namespace dev_library.Clients
 
             for (int i = 2; i < rows.Length - 2; i++)
             {
-                var parts = rows[i].Split(new char[] { '/', ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                var difficulty = Helpers.GetDifficulty(parts[2]);
-                var dpsGain = Math.Round(double.Parse(parts[^5]) - baseDps, 0);
-                var trueDpsGain = difficulty == "M+" ? dpsGain * 1.1 : dpsGain;
-
-                //if (playerName.ToUpper().Contains("BOMBA"))
-                //{
-                //    trueDpsGain *= 5;
-                //}
-                //else if (playerName.ToUpper().Contains("DICE")) 
-                //{
-                //    trueDpsGain *= .5;
-                //}
-
-                if (dpsGain < 0)
+                try
                 {
-                    continue;
+                    var parts = rows[i].Split(new char[] { '/', ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    var difficulty = Helpers.GetDifficulty(parts[2]);
+                    var dpsGain = Math.Round(double.Parse(parts[^5]) - baseDps, 0);
+                    var trueDpsGain = difficulty == "M+" ? dpsGain * 1.1 : dpsGain;
+
+                    //if (playerName.ToUpper().Contains("BOMBA"))
+                    //{
+                    //    trueDpsGain *= 5;
+                    //}
+                    //else if (playerName.ToUpper().Contains("DICE")) 
+                    //{
+                    //    trueDpsGain *= .5;
+                    //}
+
+                    if (dpsGain < 0)
+                    {
+                        continue;
+                    }
+
+                    var itemName = string.Empty;
+
+                    var item = items.FirstOrDefault(i => i.Id == parts[3]);
+
+                    if (item == null)
+                    {
+                        itemName = await bnetClient.GetItemName(token, parts[3]);
+                        items.Add(new Item(itemName, parts[3]));
+                    }
+                    else
+                    {
+                        itemName = item.Name;
+                    }
+
+                    File.WriteAllText($"{AppSettings.BasePath}/{cacheName}", JsonConvert.SerializeObject(items));
+
+                    var slot = Helpers.GetItemSlot(parts[6]);
+
+                    var itemUpgrade = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
+
+                    var existingSlotIndex = itemUpgrades.FindIndex(i => i.Slot.ToUpper().Trim() == slot.ToUpper().Trim());
+                    var existingItemIndex = itemUpgrades.FindIndex(i => i.ItemName.ToUpper().Trim() == itemName.ToUpper().Trim());
+
+                    if (existingItemIndex != -1 && trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
+                    {
+                        itemUpgrades[existingItemIndex] = itemUpgrade;
+                    }
+                    else
+                    {
+                        itemUpgrades.Add(itemUpgrade);
+                    }
+                }
+                catch (Exception)
+                {
+
                 }
 
-                var itemName = string.Empty;
-
-                var item = items.FirstOrDefault(i => i.Id == parts[3]);
-
-                if (item == null)
-                {
-                    itemName = await bnetClient.GetItemName(token, parts[3]);
-                    items.Add(new Item(itemName, parts[3]));
-                }
-                else
-                {
-                    itemName = item.Name;
-                }
-
-                File.WriteAllText($"{AppSettings.BasePath}/{cacheName}", JsonConvert.SerializeObject(items));
-
-                var slot = Helpers.GetItemSlot(parts[6]);
-
-                var itemUpgrade = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
-
-                var existingSlotIndex = itemUpgrades.FindIndex(i => i.Slot.ToUpper().Trim() == slot.ToUpper().Trim());
-                var existingItemIndex = itemUpgrades.FindIndex(i => i.ItemName.ToUpper().Trim() == itemName.ToUpper().Trim());
-
-                if (existingItemIndex != -1 && trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
-                {
-                    itemUpgrades[existingItemIndex] = itemUpgrade;
-                }
-                else
-                {
-                    itemUpgrades.Add(itemUpgrade);
-                }
+                
             }
 
             //itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.ItemName, sd.PlayerName, sd.Difficulty }).Select(g => g.First()).ToList();
