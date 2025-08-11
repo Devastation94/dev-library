@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using dev_library.Data;
+﻿using dev_library.Data;
 using OpenAI;
 using OpenAI.Chat;
 
@@ -11,17 +6,31 @@ namespace dev_library.Clients
 {
     public class AiClient
     {
-        public async Task<string> GetResponse(string message, int aggresionLevel)
+        private ChatClient _client = new ChatClient("gpt-5-nano", AppSettings.GptSettings.ApiToken);
+        private List<ChatMessage> _history = new List<ChatMessage>
+            {
+                new SystemChatMessage(AppSettings.GptSettings.Prefix)
+            };
+
+        public async Task<string> GetResponse(string message, int aggressionLevel)
         {
-            var client = new ChatClient("gpt-5-nano", AppSettings.GptSettings.ApiToken);
+            // Clean up mention
+            message = message.Replace("<@1305976068053794846>", "").Trim();
 
-            message = message.Replace("<@1305976068053794846>", "");
+            // Add user message
+            _history.Add(new UserChatMessage(message));
 
-            var suffix = $"The level is {aggresionLevel}";
+            // Send the entire conversation so far
+            ChatCompletion completion = await _client.CompleteChatAsync(_history);
 
-            ChatCompletion completion = client.CompleteChat($"{AppSettings.GptSettings.Prefix} {message} {AppSettings.GptSettings.Suffix} {aggresionLevel}");
+            var reply = completion.Content[0].Text
+                .Replace("@Refined Bot", "")
+                .Trim();
 
-            return completion.Content[0].Text.Replace("@Refined Bot", "");
+            // Add assistant reply
+            _history.Add(new AssistantChatMessage(reply));
+
+            return reply;
         }
     }
 }
