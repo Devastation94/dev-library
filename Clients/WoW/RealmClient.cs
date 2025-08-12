@@ -7,13 +7,13 @@ namespace dev_refined
 {
     public class RealmClient
     {
-
-        const string fileLocation = "cache.json";
         DiscordClient discordClient = new DiscordClient();
         BattleNetClient battleNetClient = new BattleNetClient();
 
         public async Task<bool> GetServerAvailibility()
         {
+            var fileLocation = $"{AppSettings.BasePath}/realmcache.json";
+
             using (var client = new HttpClient())
             {
                 var usersToPing = new[] { "217441514161176577", "154306391400513536", "178295063808311297", "285277811348996097" };
@@ -24,7 +24,7 @@ namespace dev_refined
 
                 var realmData = await battleNetClient.GetServerInformation(token);
 
-                var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(AppSettings.BasePath + "/realmcache.json"));
+                var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
 
                 if (realmData.Status.Name.ToUpper() != cachedData.Status.Name.ToUpper() && realmData.Status.Name.ToUpper() == "UP")
                 {
@@ -46,6 +46,7 @@ namespace dev_refined
         public async Task GetServerAvailibility2()
         {
             var realmStatus = false;
+            var fileLocation = $"{AppSettings.BasePath}/realmcache.json";
 
             while (!realmStatus)
             {
