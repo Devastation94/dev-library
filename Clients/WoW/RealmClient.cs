@@ -70,6 +70,7 @@ namespace dev_refined
                     else
                     {
                         Log.Information($"Server status has not changed from {realmData.Status.Name}");
+                        File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
                     }
 
                     realmStatus = realmData.Status.Name.ToUpper() == "UP";
