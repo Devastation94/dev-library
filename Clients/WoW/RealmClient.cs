@@ -1,4 +1,5 @@
-﻿using dev_refined.Clients;
+﻿using dev_library.Data;
+using dev_refined.Clients;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -11,7 +12,37 @@ namespace dev_refined
         DiscordClient discordClient = new DiscordClient();
         BattleNetClient battleNetClient = new BattleNetClient();
 
-        public async Task GetServerAvailibility()
+        public async Task<bool> GetServerAvailibility()
+        {
+            using (var client = new HttpClient())
+            {
+                var usersToPing = new[] { "217441514161176577", "154306391400513536", "178295063808311297", "285277811348996097" };
+
+                Log.Information("");
+
+                var token = await battleNetClient.GetOAuthToken();
+
+                var realmData = await battleNetClient.GetServerInformation(token);
+
+                var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(AppSettings.BasePath + "/realmcache.json"));
+
+                if (realmData.Status.Name.ToUpper() != cachedData.Status.Name.ToUpper() && realmData.Status.Name.ToUpper() == "UP")
+                {
+                    Log.Information($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
+                    var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
+                    await discordClient.PostWebHook($"{content} @Raider @Trial" , "GUILDCHAT");
+                    File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
+                    return true;
+                }
+                else
+                {
+                    Log.Information($"Server status has not changed from {realmData.Status.Name}");
+                    return false;
+                }
+            }
+        }
+
+        public async Task GetServerAvailibility2()
         {
             var realmStatus = false;
 
