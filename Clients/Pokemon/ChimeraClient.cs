@@ -1,6 +1,5 @@
 using dev_library.Data;
 using HtmlAgilityPack;
-using System.Text.RegularExpressions;
 
 namespace dev_library.Clients
 {

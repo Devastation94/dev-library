@@ -22,7 +22,7 @@ namespace dev_refined.Clients
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);  
+                Console.WriteLine(ex.Message);
             }
 
             Log.Information("DiscordClient.PostWebHook: END");

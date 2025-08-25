@@ -22,7 +22,7 @@ namespace dev_refined
 
                 var token = await battleNetClient.GetOAuthToken();
 
-                var realmData = await battleNetClient.GetServerInformation(token);
+                var realmData = await battleNetClient.GetZuljinData();
 
                 var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
 
@@ -30,7 +30,7 @@ namespace dev_refined
                 {
                     Log.Information($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
                     var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
-                    await discordClient.PostWebHook($"{content} @Raider @Trial" , "GUILDCHAT");
+                    await discordClient.PostWebHook($"{content} @Raider @Trial", "GUILDCHAT");
                     File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
                     return true;
                 }
@@ -58,7 +58,7 @@ namespace dev_refined
 
                     var token = await battleNetClient.GetOAuthToken();
 
-                    var realmData = await battleNetClient.GetServerInformation(token);
+                    var realmData = await battleNetClient.GetZuljinData();
 
                     var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
 

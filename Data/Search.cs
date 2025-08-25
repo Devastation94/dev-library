@@ -2,7 +2,7 @@ namespace dev_library.Data
 {
     public class Search
     {
-        public Search(string keyword, string store,List<Product> products)
+        public Search(string keyword, string store, List<Product> products)
         {
             Keyword = keyword;
             Store = store;

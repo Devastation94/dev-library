@@ -4,7 +4,6 @@ using dev_library.Data.WoW.Raidbots;
 using dev_refined;
 using dev_refined.Clients;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Security;
 using System.Security.Authentication;
@@ -149,7 +148,7 @@ namespace dev_library.Clients
 
                     if (item == null)
                     {
-                        itemName = await bnetClient.GetItemName(token, parts[3]);
+                        itemName = await bnetClient.GetItemName(parts[3]);
                         items.Add(new Item(itemName, parts[3]));
                     }
                     else
@@ -180,7 +179,7 @@ namespace dev_library.Clients
 
                 }
 
-                
+
             }
 
             //itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.ItemName, sd.PlayerName, sd.Difficulty }).Select(g => g.First()).ToList();

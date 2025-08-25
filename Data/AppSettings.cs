@@ -5,13 +5,14 @@ namespace dev_library.Data
 {
     public static class AppSettings
     {
+        public static bool KeyAudit {get;set;}
         public static DiscordSettings Discord { get; set; }
         public static BattleNetSettings BattleNet { get; set; }
         public static WowAuditSettings[] WowAudit { get; set; }
         public static GoogleSheetsSettings GoogleSheet { get; set; }
 
         public static FitbitSettings FitbitSettings { get; set; }
-        public static GptSettings GptSettings {get;set;}
+        public static GptSettings GptSettings { get; set; }
         public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}Code";
 
         public static void Initialize()
@@ -19,6 +20,7 @@ namespace dev_library.Data
             var json = File.ReadAllText($"{BasePath}/appsettings.json");
             var config = JsonConvert.DeserializeObject<ConfigData>(json);
 
+            KeyAudit = config.KeyAudit;
             Discord = config.Discord;
             BattleNet = config.BattleNet;
             WowAudit = config.WowAudit;
@@ -29,6 +31,8 @@ namespace dev_library.Data
 
         private class ConfigData
         {
+            [JsonProperty("keyAudit")]
+            public bool KeyAudit { get; set; }
             [JsonProperty("discord")]
             public DiscordSettings Discord { get; set; }
             [JsonProperty("battleNet")]

@@ -54,7 +54,7 @@ namespace dev_library.Clients
 
                     var lastUpdated = string.IsNullOrWhiteSpace(row[5].ToString()) ? DateTime.MinValue : DateTime.Parse(row[5].ToString());
 
-                    entries.Add(new ItemUpgrade(row[0].ToString(), row[1].ToString(), row[2].ToString(), row[3].ToString(), 
+                    entries.Add(new ItemUpgrade(row[0].ToString(), row[1].ToString(), row[2].ToString(), row[3].ToString(),
                         double.Parse(row[4].ToString()), lastUpdated));
                 }
             }
@@ -98,7 +98,7 @@ namespace dev_library.Clients
             sheetData.RemoveAll(existing =>
                 newEntries.Any(newEntry =>
                     (existing.PlayerName.ToUpper() == newEntry.PlayerName.ToUpper() &&
-                    existing.Difficulty.ToUpper() == newEntry.Difficulty.ToUpper()) || 
+                    existing.Difficulty.ToUpper() == newEntry.Difficulty.ToUpper()) ||
                     existing.LastUpdated < DateTime.Now.AddDays(-14)));
 
             // Step 3: Append new data

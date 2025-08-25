@@ -1,5 +1,4 @@
 ﻿using dev_library.Data;
-using OpenAI;
 using OpenAI.Chat;
 
 namespace dev_library.Clients
