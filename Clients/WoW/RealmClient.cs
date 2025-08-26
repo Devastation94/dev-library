@@ -16,7 +16,7 @@ namespace dev_refined
 
             using (var client = new HttpClient())
             {
-                var usersToPing = new[] { "217441514161176577", "154306391400513536", "178295063808311297", "285277811348996097" };
+                var rolesToPing = new[] { "933379677094031460", "933380098650959903"};
 
                 Log.Information("");
 
@@ -30,7 +30,7 @@ namespace dev_refined
                 {
                     Log.Information($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
                     var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
-                    await discordClient.PostWebHook($"{content} @Raider @Trial", "GUILDCHAT");
+                    await discordClient.PostWebHook($"{content} <@{string.Join("><@",rolesToPing)}>", "GUILDCHAT");
                     File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
                     return true;
                 }
