@@ -10,7 +10,7 @@ namespace dev_refined
         DiscordClient discordClient = new DiscordClient();
         BattleNetClient battleNetClient = new BattleNetClient();
 
-        public async Task<bool> GetServerAvailibility()
+        public async Task<bool> PostServerAvailability()
         {
             var fileLocation = $"{AppSettings.BasePath}/realmcache.json";
 
@@ -28,7 +28,7 @@ namespace dev_refined
 
                 if (realmData.Status.Name.ToUpper() != cachedData.Status.Name.ToUpper() && realmData.Status.Name.ToUpper() == "UP")
                 {
-                    Log.Information($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
+                    Console.WriteLine($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
                     var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
                     await discordClient.PostWebHook($"{content} <@&{string.Join("><@&",rolesToPing)}>", "GUILDCHAT");
                     File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
@@ -36,7 +36,7 @@ namespace dev_refined
                 }
                 else
                 {
-                    Log.Information($"Server status has not changed from {realmData.Status.Name}");
+                    Console.WriteLine($"Server status has not changed from {realmData.Status.Name}");
                     File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
                     return false;
                 }
