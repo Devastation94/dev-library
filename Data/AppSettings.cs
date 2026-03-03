@@ -1,117 +1,82 @@
-﻿using Newtonsoft.Json;
-using System.Text.Json;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace dev_library.Data
 {
     public static class AppSettings
     {
-        public static bool KeyAudit {get;set;}
+        public static bool DryRun { get; set; }
+        public static bool KeyAudit { get; set; }
         public static DiscordSettings Discord { get; set; }
         public static BattleNetSettings BattleNet { get; set; }
         public static WowAuditSettings[] WowAudit { get; set; }
         public static GoogleSheetsSettings GoogleSheet { get; set; }
-
         public static FitbitSettings FitbitSettings { get; set; }
         public static GptSettings GptSettings { get; set; }
         public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}Code";
 
         public static void Initialize()
         {
-            var json = File.ReadAllText($"{BasePath}/appsettings.json");
-            var config = JsonConvert.DeserializeObject<ConfigData>(json);
+            var config = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .Build();
 
-            KeyAudit = config.KeyAudit;
-            Discord = config.Discord;
-            BattleNet = config.BattleNet;
-            WowAudit = config.WowAudit;
-            GoogleSheet = config.GoogleSheet;
-            FitbitSettings = config.FitbitSettings;
-            GptSettings = config.GptSettings;
-        }
-
-        private class ConfigData
-        {
-            [JsonProperty("keyAudit")]
-            public bool KeyAudit { get; set; }
-            [JsonProperty("discord")]
-            public DiscordSettings Discord { get; set; }
-            [JsonProperty("battleNet")]
-            public BattleNetSettings BattleNet { get; set; }
-            [JsonProperty("wowAudit")]
-            public WowAuditSettings[] WowAudit { get; set; }
-            [JsonProperty("googleSheet")]
-            public GoogleSheetsSettings GoogleSheet { get; set; }
-            [JsonProperty("fitbit")]
-            public FitbitSettings FitbitSettings { get; set; }
-            [JsonProperty("gpt")]
-            public GptSettings GptSettings { get; set; }
+            DryRun = config.GetValue<bool>("dryRun");
+            KeyAudit = config.GetValue<bool>("keyAudit");
+            Discord = config.GetSection("discord").Get<DiscordSettings>();
+            BattleNet = config.GetSection("battleNet").Get<BattleNetSettings>();
+            WowAudit = config.GetSection("wowAudit").Get<WowAuditSettings[]>();
+            GoogleSheet = config.GetSection("googleSheet").Get<GoogleSheetsSettings>();
+            FitbitSettings = config.GetSection("fitbit").Get<FitbitSettings>();
+            GptSettings = config.GetSection("gpt").Get<GptSettings>();
         }
     }
 
     public class GoogleSheetsSettings
     {
-        [JsonProperty("name")]
         public string Name { get; set; }
-        [JsonProperty("id")]
         public string Id { get; set; }
-        [JsonProperty("sheetName")]
         public string SheetName { get; set; }
-        [JsonProperty("credentialsPath")]
         public string CredentialsPath { get; set; }
     }
 
     public class WowAuditSettings
     {
-        [JsonProperty("guild")]
         public string Guild { get; set; }
-        [JsonProperty("channelId")]
-        public ulong ChannelId { get; set; }
-        [JsonProperty("token")]
+        public ulong[] ChannelIds { get; set; }
         public string Token { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 
     public class BattleNetSettings
     {
-        [JsonProperty("apiUrl")]
         public string ApiUrl { get; set; }
-        [JsonProperty("tokenUrl")]
         public string TokenUrl { get; set; }
-        [JsonProperty("clientId")]
         public string ClientId { get; set; }
-        [JsonProperty("clientSecret")]
         public string ClientSecret { get; set; }
     }
 
     public class DiscordSettings
     {
-        [JsonProperty("webhooks")]
         public Dictionary<string, string> Webhooks { get; set; }
-        [JsonProperty("token")]
         public string Token { get; set; }
-        [JsonProperty("userId")]
         public ulong UserId { get; set; }
     }
 
     public class FitbitSettings
     {
-        [JsonProperty("clientId")]
         public string ClientId { get; set; }
-        [JsonProperty("clientSecret")]
         public string ClientSecret { get; set; }
-        [JsonProperty("webHooKUrl")]
         public string WebHookUrl { get; set; }
-        [JsonProperty("authorizationCode")]
         public string AuthorizationCode { get; set; }
     }
+
     public class GptSettings
     {
-        [JsonProperty("apiToken")]
         public string ApiToken { get; set; }
-        [JsonProperty("prefix")]
         public string Prefix { get; set; }
-        [JsonProperty("suffix")]
         public string Suffix { get; set; }
-        [JsonProperty("allowedRoles")]
         public string AllowedRoles { get; set; }
     }
 }

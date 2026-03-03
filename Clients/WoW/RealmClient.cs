@@ -36,7 +36,7 @@ namespace dev_refined
                 }
                 else
                 {
-                    Console.WriteLine($"Server status has not changed from {realmData.Status.Name}");
+                   // Console.WriteLine($"Server status has not changed from {realmData.Status.Name}");
                     File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
                     return false;
                 }
