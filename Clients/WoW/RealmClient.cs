@@ -14,32 +14,23 @@ namespace dev_refined
         {
             var fileLocation = $"{AppSettings.BasePath}/realmcache.json";
 
-            using (var client = new HttpClient())
+            var rolesToPing = new[] { "933379677094031460", "933380098650959903" };
+
+            var realmData = await battleNetClient.GetZuljinData();
+            var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
+
+            if (realmData.Status.Name.ToUpper() != cachedData.Status.Name.ToUpper() && realmData.Status.Name.ToUpper() == "UP")
             {
-                var rolesToPing = new[] { "933379677094031460", "933380098650959903"};
-
-                Log.Information("");
-
-                var token = await battleNetClient.GetOAuthToken();
-
-                var realmData = await battleNetClient.GetZuljinData();
-
-                var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
-
-                if (realmData.Status.Name.ToUpper() != cachedData.Status.Name.ToUpper() && realmData.Status.Name.ToUpper() == "UP")
-                {
-                    Console.WriteLine($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
-                    var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
-                    await discordClient.PostWebHook($"{content} <@&{string.Join("><@&",rolesToPing)}>", "GUILDCHAT");
-                    File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
-                    return true;
-                }
-                else
-                {
-                   // Console.WriteLine($"Server status has not changed from {realmData.Status.Name}");
-                    File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
-                    return false;
-                }
+                Console.WriteLine($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
+                var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
+                await discordClient.PostWebHook($"{content} <@&{string.Join("><@&", rolesToPing)}>", "GUILDCHAT");
+                File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
+                return true;
+            }
+            else
+            {
+                File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
+                return false;
             }
         }
 
