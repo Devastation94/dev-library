@@ -14,6 +14,7 @@ namespace dev_library.Clients
     {
         private static string RaidBotsFileUrl = "https://raidbots.com/reports/{0}/data.csv";
         private const string cacheName = "wowcache.json";
+
         public async Task<bool> IsValidReport(string url)
         {
             Console.WriteLine("RaidBotsClients.IsValidReport: START");
@@ -69,7 +70,6 @@ namespace dev_library.Clients
 
             var bnetClient = new BattleNetClient();
             var items = JsonConvert.DeserializeObject<List<Item>>(File.ReadAllText($"{AppSettings.BasePath}/{cacheName}"));
-
             var lastUpdated = DateTime.Now;
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; // TLS 1.3 is not directly supported in .NET Framework
@@ -116,26 +116,14 @@ namespace dev_library.Clients
             var playerName = playerRow[0].ToTitleCase();
             var baseDps = double.Parse(playerRow[1]);
 
-            var token = await bnetClient.GetOAuthToken();
-
             for (int i = 2; i < rows.Length - 2; i++)
             {
                 try
                 {
                     var parts = rows[i].Split(new char[] { '/', ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-
                     var difficulty = Helpers.GetDifficulty(parts[2]);
                     var dpsGain = Math.Round(double.Parse(parts[^5]) - baseDps, 0);
-                    var trueDpsGain = difficulty == "M+" ? dpsGain * 1.1 : dpsGain;
-
-                    //if (playerName.ToUpper().Contains("BOMBA"))
-                    //{
-                    //    trueDpsGain *= 5;
-                    //}
-                    //else if (playerName.ToUpper().Contains("DICE")) 
-                    //{
-                    //    trueDpsGain *= .5;
-                    //}
+                    var trueDpsGain = difficulty.Contains("Dungeon") ? dpsGain * 1.1 : dpsGain;
 
                     if (dpsGain < 0)
                     {
@@ -143,7 +131,6 @@ namespace dev_library.Clients
                     }
 
                     var itemName = string.Empty;
-
                     var item = items.FirstOrDefault(i => i.Id == parts[3]);
 
                     if (item == null)
@@ -157,47 +144,24 @@ namespace dev_library.Clients
                     }
 
                     File.WriteAllText($"{AppSettings.BasePath}/{cacheName}", JsonConvert.SerializeObject(items));
-
                     var slot = Helpers.GetItemSlot(parts[6]);
 
                     var itemUpgrade = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
-
-                    var existingSlotIndex = itemUpgrades.FindIndex(i => i.Slot.ToUpper().Trim() == slot.ToUpper().Trim());
                     var existingItemIndex = itemUpgrades.FindIndex(i => i.ItemName.ToUpper().Trim() == itemName.ToUpper().Trim());
 
                     if (existingItemIndex != -1 && trueDpsGain > itemUpgrades[existingItemIndex].DpsGain)
                     {
                         itemUpgrades[existingItemIndex] = itemUpgrade;
                     }
-                    else
+                    else if (existingItemIndex == -1)
                     {
                         itemUpgrades.Add(itemUpgrade);
                     }
                 }
                 catch (Exception)
                 {
-
                 }
-
-
             }
-
-            //itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.ItemName, sd.PlayerName, sd.Difficulty }).Select(g => g.First()).ToList();
-            //itemUpgrades = itemUpgrades.OrderByDescending(iu => iu.DpsGain).ToList().GroupBy(sd => new { sd.Slot, sd.PlayerName, sd.Difficulty }).Select(g => g.First()).ToList();
-
-            //var existingSlotIndex = itemUpgrades.FindIndex(i => i.Slot.ToUpper().Trim() == slot.ToUpper().Trim());
-            //var existingItemIndex = itemUpgrades.FindIndex(i => i.ItemName.ToUpper().Trim() == itemName.ToUpper().Trim());
-
-            //if (existingItemIndex == -1 && existingSlotIndex == -1)
-            //{
-            //    Console.WriteLine($"Adding item {itemName} to upgrades with {trueDpsGain} dps gain");
-            //    itemUpgrades.Add(new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated));
-            //}
-            //else if (existingSlotIndex != -1 && existingItemIndex != -1 && trueDpsGain > itemUpgrades[existingSlotIndex].DpsGain)
-            //{
-            //    Console.WriteLine($"Duplicate item found {itemName} changing dps gain to {trueDpsGain}");
-            //    itemUpgrades[existingSlotIndex] = new ItemUpgrade(playerName, slot, difficulty, itemName, trueDpsGain, lastUpdated);
-            //}
 
             Console.WriteLine("RaidBotsClients.GetItemUpgrades: END");
 
