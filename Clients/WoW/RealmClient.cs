@@ -23,16 +23,18 @@ namespace dev_refined
             {
                 Console.WriteLine($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
 
-                string content;
                 if (realmData.Status.Name.ToUpper() == "UP")
-                    content = $"Servers are back online! maybe? :3";
+                {
+                    foreach (var sa in AppSettings.ServerAvailability)
+                        await discordClient.PostWebHookUrl($"Servers are back online! maybe? :3 <@&{string.Join("><@&", sa.RolesToPing)}>", sa.Webhook);
+
+                    return true;
+                }
                 else
-                    content = $"Servers have gone offline! maybe? :3";
-
-                foreach (var sa in AppSettings.ServerAvailability)
-                    await discordClient.PostWebHookUrl($"{content} <@&{string.Join("><@&", sa.RolesToPing)}>", sa.Webhook);
-
-                return true;
+                {
+                    foreach (var sa in AppSettings.ServerAvailability)
+                        await discordClient.PostWebHookUrl("Servers have gone offline!", sa.Webhook);
+                }
             }
 
             return false;
