@@ -14,8 +14,6 @@ namespace dev_refined
         {
             var fileLocation = $"{AppSettings.BasePath}/realmcache.json";
 
-            var rolesToPing = new[] { "933379677094031460", "933380098650959903" };
-
             var realmData = await battleNetClient.GetZuljinData();
             var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
 
@@ -23,7 +21,10 @@ namespace dev_refined
             {
                 Console.WriteLine($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
                 var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
-                await discordClient.PostWebHook($"{content} <@&{string.Join("><@&", rolesToPing)}>", "GUILDCHAT");
+
+                foreach (var sa in AppSettings.ServerAvailability)
+                    await discordClient.PostWebHookUrl($"{content} <@&{string.Join("><@&", sa.RolesToPing)}>", sa.Webhook);
+
                 File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
                 return true;
             }

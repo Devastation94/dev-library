@@ -12,6 +12,7 @@ namespace dev_library.Data
         public static GoogleSheetsSettings GoogleSheet { get; set; }
         public static FitbitSettings FitbitSettings { get; set; }
         public static GptSettings GptSettings { get; set; }
+        public static ServerAvailabilitySettings[] ServerAvailability { get; set; }
         public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}Code";
 
         public static void Initialize()
@@ -29,6 +30,7 @@ namespace dev_library.Data
             GoogleSheet = config.GetSection("googleSheet").Get<GoogleSheetsSettings>();
             FitbitSettings = config.GetSection("fitbit").Get<FitbitSettings>();
             GptSettings = config.GetSection("gpt").Get<GptSettings>();
+            ServerAvailability = config.GetSection("serverAvailability").Get<ServerAvailabilitySettings[]>();
         }
     }
 
@@ -78,5 +80,11 @@ namespace dev_library.Data
         public string Prefix { get; set; }
         public string Suffix { get; set; }
         public string AllowedRoles { get; set; }
+    }
+
+    public class ServerAvailabilitySettings
+    {
+        public string Webhook { get; set; }
+        public string[] RolesToPing { get; set; }
     }
 }

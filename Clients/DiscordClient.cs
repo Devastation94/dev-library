@@ -29,6 +29,26 @@ namespace dev_refined.Clients
             return;
         }
 
+        public async Task PostWebHookUrl(string message, string webHookUrl)
+        {
+            Log.Information("DiscordClient.PostWebHookUrl: START");
+
+            try
+            {
+                using var client = new HttpClient();
+                var discordBody = JsonConvert.SerializeObject(new DiscordRequest(message));
+                var response = await client.PostAsync(webHookUrl, new StringContent(discordBody, Encoding.UTF8, ContentType.Json));
+                var responseContent = response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            Log.Information("DiscordClient.PostWebHookUrl: END");
+            return;
+        }
+
         public async Task PostWebHook(List<Search> searchResults)
         {
             foreach (var storeGroup in searchResults.GroupBy(sr => sr.Store))
