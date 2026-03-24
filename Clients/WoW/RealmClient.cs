@@ -33,7 +33,7 @@ namespace dev_refined
                 else
                 {
                     foreach (var sa in AppSettings.ServerAvailability)
-                        await discordClient.PostWebHookUrl("Servers have gone offline!", sa.Webhook);
+                        await discordClient.PostWebHookUrl("Servers have gone offline! maybe? :3", sa.Webhook);
                 }
             }
 
