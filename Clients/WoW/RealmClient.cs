@@ -17,22 +17,25 @@ namespace dev_refined
             var realmData = await battleNetClient.GetZuljinData();
             var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
 
-            if (realmData.Status.Name.ToUpper() != cachedData.Status.Name.ToUpper() && realmData.Status.Name.ToUpper() == "UP")
+            File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
+
+            if (realmData.Status.Name.ToUpper() != cachedData.Status.Name.ToUpper())
             {
                 Console.WriteLine($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
-                var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
+
+                string content;
+                if (realmData.Status.Name.ToUpper() == "UP")
+                    content = $"Servers are back online! maybe? :3";
+                else
+                    content = $"Servers have gone offline! maybe? :3";
 
                 foreach (var sa in AppSettings.ServerAvailability)
                     await discordClient.PostWebHookUrl($"{content} <@&{string.Join("><@&", sa.RolesToPing)}>", sa.Webhook);
 
-                File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
                 return true;
             }
-            else
-            {
-                File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
-                return false;
-            }
+
+            return false;
         }
 
         public async Task GetServerAvailibility2()
