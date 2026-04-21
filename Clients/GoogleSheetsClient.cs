@@ -18,11 +18,12 @@ namespace dev_library.Clients
 
         readonly string[] Scopes = { SheetsService.Scope.Spreadsheets };
         readonly SheetsService SheetsService;
+        readonly GoogleSheetsSettings _sheet = AppSettings.Guilds.First(g => g.GoogleSheet != null).GoogleSheet;
 
         private SheetsService GetSheetsService()
         {
             GoogleCredential credential;
-            using (var stream = new FileStream(AppSettings.GoogleSheet.CredentialsPath, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(_sheet.CredentialsPath, FileMode.Open, FileAccess.Read))
             {
                 credential = GoogleCredential.FromStream(stream).CreateScoped(Scopes);
             }
@@ -30,15 +31,15 @@ namespace dev_library.Clients
             return new SheetsService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
-                ApplicationName = AppSettings.GoogleSheet.SheetName,
+                ApplicationName = _sheet.SheetName,
             });
         }
 
         private async Task<List<ItemUpgrade>> ReadEntries()
         {
             Console.WriteLine("GoogleSheetsClient.ReadEntries: START");
-            var range = $"{AppSettings.GoogleSheet.SheetName}!A:F"; // Assuming headers are in row 1
-            var request = SheetsService.Spreadsheets.Values.Get(AppSettings.GoogleSheet.Id, range);
+            var range = $"{_sheet.SheetName}!A:F"; // Assuming headers are in row 1
+            var request = SheetsService.Spreadsheets.Values.Get(_sheet.Id, range);
             var response = await request.ExecuteAsync();
 
             var values = response.Values;
@@ -65,14 +66,14 @@ namespace dev_library.Clients
         private async Task ClearSheet()
         {
             var requestBody = new ClearValuesRequest();
-            var request = SheetsService.Spreadsheets.Values.Clear(requestBody, AppSettings.GoogleSheet.Id, $"{AppSettings.GoogleSheet.SheetName}!A:F");
+            var request = SheetsService.Spreadsheets.Values.Clear(requestBody, _sheet.Id, $"{_sheet.SheetName}!A:F");
             await request.ExecuteAsync();
         }
 
         private async Task WriteEntries(List<ItemUpgrade> entries)
         {
             Console.WriteLine("GoogleSheetsClient.WriteEntries: START");
-            var range = $"{AppSettings.GoogleSheet.SheetName}!A:F";
+            var range = $"{_sheet.SheetName}!A:F";
             var values = new List<IList<object>>();
 
             foreach (var entry in entries)
@@ -81,7 +82,7 @@ namespace dev_library.Clients
             }
 
             var requestBody = new ValueRange { Values = values };
-            var request = SheetsService.Spreadsheets.Values.Update(requestBody, AppSettings.GoogleSheet.Id, range);
+            var request = SheetsService.Spreadsheets.Values.Update(requestBody, _sheet.Id, range);
             request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
             await request.ExecuteAsync();
             Console.WriteLine("GoogleSheetsClient.WriteEntries: END");

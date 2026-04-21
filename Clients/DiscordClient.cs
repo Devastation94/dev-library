@@ -1,52 +1,22 @@
 ﻿using dev_library.Data;
-using dev_refined.Data;
-using Newtonsoft.Json;
-using RestSharp;
 using Serilog;
-using System.Text;
 
 namespace dev_refined.Clients
 {
     public class DiscordClient
     {
-        public async Task PostWebHook(string message, string webHook)
+        public static Func<ulong, string, Task>? SendMessageAsync { get; set; }
+
+        public async Task PostToChannel(ulong channelId, string message)
         {
-            Log.Information("DiscordClient.PostWebHook: START");
+            Log.Information("DiscordClient.PostToChannel: START");
 
-            try
-            {
-                using var client = new HttpClient();
-                var discordBody = JsonConvert.SerializeObject(new DiscordRequest(message));
-                var response = await client.PostAsync(AppSettings.Discord.Webhooks[webHook], new StringContent(discordBody, Encoding.UTF8, ContentType.Json));
-                var responseContent = response.Content.ReadAsStringAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            if (SendMessageAsync != null)
+                await SendMessageAsync(channelId, message);
+            else
+                Console.WriteLine($"[WARN] DiscordClient.SendMessageAsync not wired up. Message: {message}");
 
-            Log.Information("DiscordClient.PostWebHook: END");
-            return;
-        }
-
-        public async Task PostWebHookUrl(string message, string webHookUrl)
-        {
-            Log.Information("DiscordClient.PostWebHookUrl: START");
-
-            try
-            {
-                using var client = new HttpClient();
-                var discordBody = JsonConvert.SerializeObject(new DiscordRequest(message));
-                var response = await client.PostAsync(webHookUrl, new StringContent(discordBody, Encoding.UTF8, ContentType.Json));
-                var responseContent = response.Content.ReadAsStringAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            Log.Information("DiscordClient.PostWebHookUrl: END");
-            return;
+            Log.Information("DiscordClient.PostToChannel: END");
         }
 
         public async Task PostWebHook(List<Search> searchResults)
@@ -69,10 +39,8 @@ namespace dev_refined.Clients
 
                 try
                 {
-                    using var client = new HttpClient();
-                    var discordBody = JsonConvert.SerializeObject(new DiscordRequest(webHookValue));
-                    var response = await client.PostAsync(AppSettings.Discord.Webhooks["POKEMON"], new StringContent(discordBody, Encoding.UTF8, "application/json"));
-                    var responseContent = response.Content.ReadAsStringAsync();
+                    if (SendMessageAsync != null)
+                        await SendMessageAsync(AppSettings.Guilds.First(g => g.Name == "POKEMON").Channels.GetValueOrDefault("general"), webHookValue);
                 }
                 catch (Exception ex)
                 {
@@ -80,7 +48,6 @@ namespace dev_refined.Clients
                     throw;
                 }
             }
-            return;
         }
     }
 }

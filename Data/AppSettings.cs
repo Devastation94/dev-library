@@ -5,14 +5,11 @@ namespace dev_library.Data
     public static class AppSettings
     {
         public static bool DryRun { get; set; }
-        public static bool KeyAudit { get; set; }
         public static DiscordSettings Discord { get; set; }
         public static BattleNetSettings BattleNet { get; set; }
-        public static WowAuditSettings[] WowAudit { get; set; }
-        public static GoogleSheetsSettings GoogleSheet { get; set; }
+        public static GuildSettings[] Guilds { get; set; }
         public static FitbitSettings FitbitSettings { get; set; }
         public static GptSettings GptSettings { get; set; }
-        public static ServerAvailabilitySettings[] ServerAvailability { get; set; }
         public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}Code";
 
         public static void Initialize()
@@ -23,15 +20,37 @@ namespace dev_library.Data
                 .Build();
 
             DryRun = config.GetValue<bool>("dryRun");
-            KeyAudit = config.GetValue<bool>("keyAudit");
             Discord = config.GetSection("discord").Get<DiscordSettings>();
             BattleNet = config.GetSection("battleNet").Get<BattleNetSettings>();
-            WowAudit = config.GetSection("wowAudit").Get<WowAuditSettings[]>();
-            GoogleSheet = config.GetSection("googleSheet").Get<GoogleSheetsSettings>();
+            Guilds = config.GetSection("guilds").Get<GuildSettings[]>();
             FitbitSettings = config.GetSection("fitbit").Get<FitbitSettings>();
             GptSettings = config.GetSection("gpt").Get<GptSettings>();
-            ServerAvailability = config.GetSection("serverAvailability").Get<ServerAvailabilitySettings[]>();
         }
+    }
+
+    public class GuildSettings
+    {
+        public string Name { get; set; }
+        public Dictionary<string, ulong> Channels { get; set; }
+        public string[] RolesToPing { get; set; }
+        public GuildFeatures Features { get; set; }
+        public DroptimizerSettings Droptimizer { get; set; }
+        public GoogleSheetsSettings GoogleSheet { get; set; }
+    }
+
+    public class GuildFeatures
+    {
+        public bool Droptimizer { get; set; }
+        public bool DroptimizerReminder { get; set; }
+        public bool KeyAudit { get; set; }
+        public bool ServerAvailability { get; set; }
+    }
+
+    public class DroptimizerSettings
+    {
+        public string Token { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 
     public class GoogleSheetsSettings
@@ -40,16 +59,6 @@ namespace dev_library.Data
         public string Id { get; set; }
         public string SheetName { get; set; }
         public string CredentialsPath { get; set; }
-    }
-
-    public class WowAuditSettings
-    {
-        public string Guild { get; set; }
-        public ulong[] ChannelIds { get; set; }
-        public string Token { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public bool ReminderOnly { get; set; }
     }
 
     public class BattleNetSettings
@@ -62,7 +71,6 @@ namespace dev_library.Data
 
     public class DiscordSettings
     {
-        public Dictionary<string, string> Webhooks { get; set; }
         public string Token { get; set; }
         public ulong UserId { get; set; }
     }
@@ -81,11 +89,5 @@ namespace dev_library.Data
         public string Prefix { get; set; }
         public string Suffix { get; set; }
         public string AllowedRoles { get; set; }
-    }
-
-    public class ServerAvailabilitySettings
-    {
-        public string Webhook { get; set; }
-        public string[] RolesToPing { get; set; }
     }
 }

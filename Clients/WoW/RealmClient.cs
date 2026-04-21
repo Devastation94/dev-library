@@ -25,58 +25,20 @@ namespace dev_refined
 
                 if (realmData.Status.Name.ToUpper() == "UP")
                 {
-                    foreach (var sa in AppSettings.ServerAvailability)
-                        await discordClient.PostWebHookUrl($"Servers are back online! maybe? :3 <@&{string.Join("><@&", sa.RolesToPing)}>", sa.Webhook);
+                    foreach (var guild in AppSettings.Guilds.Where(g => g.Features.ServerAvailability))
+                        await discordClient.PostToChannel(guild.Channels.GetValueOrDefault("general"), $"Servers are back online! maybe? :3 <@&{string.Join("><@&", guild.RolesToPing)}>");
 
                     return true;
                 }
                 else
                 {
-                    foreach (var sa in AppSettings.ServerAvailability)
-                        await discordClient.PostWebHookUrl("Servers have gone offline! maybe? :3", sa.Webhook);
+                    foreach (var guild in AppSettings.Guilds.Where(g => g.Features.ServerAvailability))
+                        await discordClient.PostToChannel(guild.Channels.GetValueOrDefault("general"), "Servers have gone offline! maybe? :3");
                 }
             }
 
             return false;
         }
 
-        public async Task GetServerAvailibility2()
-        {
-            var realmStatus = false;
-            var fileLocation = $"{AppSettings.BasePath}/realmcache.json";
-
-            while (!realmStatus)
-            {
-                using (var client = new HttpClient())
-                {
-                    var usersToPing = new[] { "217441514161176577", "154306391400513536", "178295063808311297", "285277811348996097" };
-
-                    Log.Information("");
-
-                    var token = await battleNetClient.GetOAuthToken();
-
-                    var realmData = await battleNetClient.GetZuljinData();
-
-                    var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
-
-                    if (realmData.Status.Name.ToUpper() != cachedData.Status.Name.ToUpper() && realmData.Status.Name.ToUpper() == "UP")
-                    {
-                        Log.Information($"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name}");
-                        var content = $"Server status has changed from {cachedData.Status.Name} to {realmData.Status.Name} maybe? :3";
-                        await discordClient.PostWebHook(content + string.Join(" ", usersToPing.Select(user => $"<@{user}>")), "GUILDCHAT");
-                        File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
-                    }
-                    else
-                    {
-                        Log.Information($"Server status has not changed from {realmData.Status.Name}");
-                        File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
-                    }
-
-                    realmStatus = realmData.Status.Name.ToUpper() == "UP";
-                }
-                Thread.Sleep(1000);
-            }
-            Log.Information("Servers are now up. Ending execution");
-        }
     }
 }
