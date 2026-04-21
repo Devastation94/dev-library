@@ -1,6 +1,7 @@
 ﻿using dev_library.Data;
 using dev_library.Data.WoW.Raidbots;
 using Google.Apis.Auth.OAuth2;
+using Serilog;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
@@ -22,22 +23,26 @@ namespace dev_library.Clients
 
         private SheetsService GetSheetsService()
         {
+            Console.WriteLine("GoogleSheetsClient.GetSheetsService: START");
             GoogleCredential credential;
             using (var stream = new FileStream(_sheet.CredentialsPath, FileMode.Open, FileAccess.Read))
             {
                 credential = GoogleCredential.FromStream(stream).CreateScoped(Scopes);
             }
 
-            return new SheetsService(new BaseClientService.Initializer()
+            var service = new SheetsService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
                 ApplicationName = _sheet.SheetName,
             });
+
+            Console.WriteLine("GoogleSheetsClient.GetSheetsService: END");
+            return service;
         }
 
         private async Task<List<ItemUpgrade>> ReadEntries()
         {
-            Console.WriteLine("GoogleSheetsClient.ReadEntries: START");
+            Log.Information("GoogleSheetsClient.ReadEntries: START");
             var range = $"{_sheet.SheetName}!A:F"; // Assuming headers are in row 1
             var request = SheetsService.Spreadsheets.Values.Get(_sheet.Id, range);
             var response = await request.ExecuteAsync();
@@ -59,20 +64,22 @@ namespace dev_library.Clients
                         double.Parse(row[4].ToString()), lastUpdated));
                 }
             }
-            Console.WriteLine("GoogleSheetsClient.ReadEntries: END");
+            Log.Information("GoogleSheetsClient.ReadEntries: END");
             return entries;
         }
 
         private async Task ClearSheet()
         {
+            Console.WriteLine("GoogleSheetsClient.ClearSheet: START");
             var requestBody = new ClearValuesRequest();
             var request = SheetsService.Spreadsheets.Values.Clear(requestBody, _sheet.Id, $"{_sheet.SheetName}!A:F");
             await request.ExecuteAsync();
+            Console.WriteLine("GoogleSheetsClient.ClearSheet: END");
         }
 
         private async Task WriteEntries(List<ItemUpgrade> entries)
         {
-            Console.WriteLine("GoogleSheetsClient.WriteEntries: START");
+            Log.Information("GoogleSheetsClient.WriteEntries: START");
             var range = $"{_sheet.SheetName}!A:F";
             var values = new List<IList<object>>();
 
@@ -85,12 +92,12 @@ namespace dev_library.Clients
             var request = SheetsService.Spreadsheets.Values.Update(requestBody, _sheet.Id, range);
             request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
             await request.ExecuteAsync();
-            Console.WriteLine("GoogleSheetsClient.WriteEntries: END");
+            Log.Information("GoogleSheetsClient.WriteEntries: END");
         }
 
         public async Task<bool> UpdateSheet(List<ItemUpgrade> newEntries)
         {
-            Console.WriteLine("GoogleSheetsClient.UpdateSheet: START");
+            Log.Information("GoogleSheetsClient.UpdateSheet: START");
 
             // Step 1: Read current data from the sheet
             var sheetData = await ReadEntries();
@@ -112,7 +119,7 @@ namespace dev_library.Clients
 
             await WriteEntries(sheetData.OrderByDescending(sd => sd.DpsGain).ToList());
 
-            Console.WriteLine("GoogleSheetsClient.UpdateSheet: END");
+            Log.Information("GoogleSheetsClient.UpdateSheet: END");
             return true;
         }
     }

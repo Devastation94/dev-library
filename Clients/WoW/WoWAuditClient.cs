@@ -13,6 +13,7 @@ namespace dev_refined.Clients
     {
         public async Task<List<WoWAuditCharacter>> GetCharacters(string guild)
         {
+            Log.Information("WoWAuditClient.GetCharacters: START {Guild}", guild);
             try
             {
                 using var client = new HttpClient();
@@ -25,13 +26,13 @@ namespace dev_refined.Clients
 
                 var guildies = JsonConvert.DeserializeObject<List<WoWAuditCharacter>>(response);
 
-                Log.Information($"Found {guildies.Count}");
-
+                Log.Information($"WoWAuditClient.GetCharacters: found {guildies.Count}");
+                Log.Information("WoWAuditClient.GetCharacters: END");
                 return guildies;
             }
             catch (Exception)
             {
-                Console.WriteLine("Failed to get wow audit characters");
+                Console.WriteLine("WoWAuditClient.GetCharacters: failed");
                 throw;
             }
         }
@@ -39,7 +40,7 @@ namespace dev_refined.Clients
         {
             var response = "";
 
-            Console.WriteLine("WoWAuditClient.UpdateWishlist: START");
+            Log.Information("WoWAuditClient.UpdateWishlist: START");
             try
             {
                 using var client = new HttpClient();
@@ -50,13 +51,13 @@ namespace dev_refined.Clients
             }
             catch (Exception)
             {
-                Console.WriteLine("Failed to update wowaudit wishlist");
-                Console.WriteLine(response);
+                Log.Warning("WoWAuditClient.UpdateWishlist: failed");
+                Log.Debug(response);
                 throw;
             }
             finally
             {
-                Console.WriteLine("WoWAuditClient.UpdateWishlist: END");
+                Log.Information("WoWAuditClient.UpdateWishlist: END");
             }
         }
     }

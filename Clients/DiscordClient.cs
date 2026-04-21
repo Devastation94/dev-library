@@ -21,6 +21,7 @@ namespace dev_refined.Clients
 
         public async Task PostWebHook(List<Search> searchResults)
         {
+            Log.Information("DiscordClient.PostWebHook: START");
             foreach (var storeGroup in searchResults.GroupBy(sr => sr.Store))
             {
                 var webHookValue = $"- {storeGroup.Key}\n";
@@ -48,6 +49,8 @@ namespace dev_refined.Clients
                     throw;
                 }
             }
+
+            Log.Information("DiscordClient.PostWebHook: END");
         }
     }
 }

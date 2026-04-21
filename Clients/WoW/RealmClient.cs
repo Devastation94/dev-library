@@ -12,6 +12,7 @@ namespace dev_refined
 
         public async Task<bool> PostServerAvailability()
         {
+            Log.Information("RealmClient.PostServerAvailability: START");
             var fileLocation = $"{AppSettings.BasePath}/realmcache.json";
 
             var realmData = await battleNetClient.GetZuljinData();
@@ -37,6 +38,7 @@ namespace dev_refined
                 }
             }
 
+            Log.Information("RealmClient.PostServerAvailability: END");
             return false;
         }
 
