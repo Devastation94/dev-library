@@ -49,6 +49,7 @@ namespace dev_library.Data
         public string Token { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public bool ReminderOnly { get; set; }
     }
 
     public class BattleNetSettings
