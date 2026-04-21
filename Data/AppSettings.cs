@@ -8,8 +8,8 @@ namespace dev_library.Data
         public static DiscordSettings Discord { get; set; }
         public static BattleNetSettings BattleNet { get; set; }
         public static GuildSettings[] Guilds { get; set; }
-        public static FitbitSettings FitbitSettings { get; set; }
-        public static GptSettings GptSettings { get; set; }
+        // public static FitbitSettings FitbitSettings { get; set; }
+        // public static GptSettings GptSettings { get; set; }
         public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}Code";
 
         public static void Initialize()
@@ -23,8 +23,8 @@ namespace dev_library.Data
             Discord = config.GetSection("discord").Get<DiscordSettings>();
             BattleNet = config.GetSection("battleNet").Get<BattleNetSettings>();
             Guilds = config.GetSection("guilds").Get<GuildSettings[]>();
-            FitbitSettings = config.GetSection("fitbit").Get<FitbitSettings>();
-            GptSettings = config.GetSection("gpt").Get<GptSettings>();
+            // FitbitSettings = config.GetSection("fitbit").Get<FitbitSettings>();
+            // GptSettings = config.GetSection("gpt").Get<GptSettings>();
         }
     }
 
@@ -75,19 +75,19 @@ namespace dev_library.Data
         public ulong UserId { get; set; }
     }
 
-    public class FitbitSettings
-    {
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
-        public string WebHookUrl { get; set; }
-        public string AuthorizationCode { get; set; }
-    }
+    // public class FitbitSettings
+    // {
+    //     public string ClientId { get; set; }
+    //     public string ClientSecret { get; set; }
+    //     public string WebHookUrl { get; set; }
+    //     public string AuthorizationCode { get; set; }
+    // }
 
-    public class GptSettings
-    {
-        public string ApiToken { get; set; }
-        public string Prefix { get; set; }
-        public string Suffix { get; set; }
-        public string AllowedRoles { get; set; }
-    }
+    // public class GptSettings
+    // {
+    //     public string ApiToken { get; set; }
+    //     public string Prefix { get; set; }
+    //     public string Suffix { get; set; }
+    //     public string AllowedRoles { get; set; }
+    // }
 }
