@@ -7,9 +7,18 @@ namespace dev_refined
 {
     public class RefinedClient
     {
-        WoWAuditClient WowAuditClient = new();
-        RaiderIoClient RaiderIoClient = new();
-        DiscordClient DiscordClient = new();
+        private readonly IWoWAuditClient _wowAuditClient;
+        private readonly IRaiderIoClient _raiderIoClient;
+        private readonly IDiscordClient _discordClient;
+
+        public RefinedClient() : this(new WoWAuditClient(), new RaiderIoClient(), new DiscordClient()) { }
+
+        public RefinedClient(IWoWAuditClient wowAuditClient, IRaiderIoClient raiderIoClient, IDiscordClient discordClient)
+        {
+            _wowAuditClient = wowAuditClient;
+            _raiderIoClient = raiderIoClient;
+            _discordClient = discordClient;
+        }
 
         public async Task PostBadPlayers()
         {
@@ -20,13 +29,13 @@ namespace dev_refined
                 var badPlayers = new List<BadPlayer>();
                 var paddingArray = new int[] { 14, 10, 6 };
 
-                var guildies = await WowAuditClient.GetCharacters(guild.Name);
+                var guildies = await _wowAuditClient.GetCharacters(guild.Name);
 
                 foreach (var guildy in guildies.Where(g => g.Rank.ToUpper() != "RAIDER ALT"))
                 {
                     Log.Information($"RefinedClient.PostBadPlayers: Getting key info for {guildy.Name}");
 
-                    var weeklyKeys = await RaiderIoClient.GetWeeklyKeyHistory(guildy);
+                    var weeklyKeys = await _raiderIoClient.GetWeeklyKeyHistory(guildy);
                     var maxKeyCount = weeklyKeys?.MythicPlusWeeklyHighestLevelRuns.Count(k => k.MythicLevel >= Constants.MAX_KEY_LEVEL) ?? 0;
 
                     Log.Information($"RefinedClient.PostBadPlayers: {guildy.Name} performed {maxKeyCount} +{Constants.MAX_KEY_LEVEL}s this week");
@@ -63,7 +72,7 @@ namespace dev_refined
 
                 table += $"\n|--------------|----------|------|\n```";
 
-                await DiscordClient.PostToChannel(guild.Channels.GetValueOrDefault("officer"), table);
+                await _discordClient.PostToChannel(guild.Channels.GetValueOrDefault("officer"), table);
             }
 
             Log.Information("RefinedClient.PostBadPlayers: END");

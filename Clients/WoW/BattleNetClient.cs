@@ -9,7 +9,7 @@ using System.Text;
 
 namespace dev_refined.Clients
 {
-    public class BattleNetClient
+    public class BattleNetClient : IBattleNetClient
     {
         const string realmDataEndpoint = "/connected-realm/61?namespace=dynamic-us&locale=en_US";
         const string allRealmsEndpoint = "/connected-realm/index?namespace=dynamic-us&locale=en_US";

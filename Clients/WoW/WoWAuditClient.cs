@@ -9,7 +9,7 @@ using System.Text;
 
 namespace dev_refined.Clients
 {
-    public class WoWAuditClient
+    public class WoWAuditClient : IWoWAuditClient
     {
         public async Task<List<WoWAuditCharacter>> GetCharacters(string guild)
         {

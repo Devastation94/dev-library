@@ -4,7 +4,7 @@ using Serilog;
 
 namespace dev_refined.Clients
 {
-    public class RaiderIoClient
+    public class RaiderIoClient : IRaiderIoClient
     {
         public async Task<RaiderIoKeyResponse> GetWeeklyKeyHistory(WoWAuditCharacter guildy)
         {

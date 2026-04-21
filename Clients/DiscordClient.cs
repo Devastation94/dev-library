@@ -3,7 +3,7 @@ using Serilog;
 
 namespace dev_refined.Clients
 {
-    public class DiscordClient
+    public class DiscordClient : IDiscordClient
     {
         public static Func<ulong, string, Task>? SendMessageAsync { get; set; }
 

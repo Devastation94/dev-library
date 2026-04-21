@@ -7,15 +7,23 @@ namespace dev_refined
 {
     public class RealmClient
     {
-        DiscordClient discordClient = new DiscordClient();
-        BattleNetClient battleNetClient = new BattleNetClient();
+        private readonly IDiscordClient _discordClient;
+        private readonly IBattleNetClient _battleNetClient;
+
+        public RealmClient() : this(new DiscordClient(), new BattleNetClient()) { }
+
+        public RealmClient(IDiscordClient discordClient, IBattleNetClient battleNetClient)
+        {
+            _discordClient = discordClient;
+            _battleNetClient = battleNetClient;
+        }
 
         public async Task<bool> PostServerAvailability()
         {
             Log.Information("RealmClient.PostServerAvailability: START");
             var fileLocation = $"{AppSettings.BasePath}/realmcache.json";
 
-            var realmData = await battleNetClient.GetZuljinData();
+            var realmData = await _battleNetClient.GetZuljinData();
             var cachedData = JsonConvert.DeserializeObject<BlizzardRealmResponse>(File.ReadAllText(fileLocation));
 
             File.WriteAllText(fileLocation, JsonConvert.SerializeObject(realmData));
@@ -27,14 +35,14 @@ namespace dev_refined
                 if (realmData.Status.Name.ToUpper() == "UP")
                 {
                     foreach (var guild in AppSettings.Guilds.Where(g => g.Features.ServerAvailability))
-                        await discordClient.PostToChannel(guild.Channels.GetValueOrDefault("general"), $"Servers are back online! maybe? :3 <@&{string.Join("><@&", guild.RolesToPing)}>");
+                        await _discordClient.PostToChannel(guild.Channels.GetValueOrDefault("general"), $"Servers are back online! maybe? :3 <@&{string.Join("><@&", guild.RolesToPing)}>");
 
                     return true;
                 }
                 else
                 {
                     foreach (var guild in AppSettings.Guilds.Where(g => g.Features.ServerAvailability))
-                        await discordClient.PostToChannel(guild.Channels.GetValueOrDefault("general"), "Servers have gone offline! maybe? :3");
+                        await _discordClient.PostToChannel(guild.Channels.GetValueOrDefault("general"), "Servers have gone offline! maybe? :3");
                 }
             }
 
