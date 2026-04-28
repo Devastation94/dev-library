@@ -8,6 +8,7 @@ namespace dev_library.Data
         public static DiscordSettings Discord { get; set; }
         public static BattleNetSettings BattleNet { get; set; }
         public static GuildSettings[] Guilds { get; set; }
+        public static SoundboardSettings Soundboard { get; set; } = new();
         // public static FitbitSettings FitbitSettings { get; set; }
         // public static GptSettings GptSettings { get; set; }
         public static string BasePath { get; set; } = $"{Path.GetPathRoot(AppContext.BaseDirectory)}Code";
@@ -23,6 +24,7 @@ namespace dev_library.Data
             Discord = config.GetSection("discord").Get<DiscordSettings>();
             BattleNet = config.GetSection("battleNet").Get<BattleNetSettings>();
             Guilds = config.GetSection("guilds").Get<GuildSettings[]>();
+            Soundboard = config.GetSection("soundboard").Get<SoundboardSettings>() ?? new SoundboardSettings();
             // FitbitSettings = config.GetSection("fitbit").Get<FitbitSettings>();
             // GptSettings = config.GetSection("gpt").Get<GptSettings>();
         }
@@ -73,6 +75,12 @@ namespace dev_library.Data
     {
         public string Token { get; set; }
         public ulong UserId { get; set; }
+    }
+
+    public class SoundboardSettings
+    {
+        public ulong[] UserIds { get; set; } = Array.Empty<ulong>();
+        public string SoundsPath { get; set; } = string.Empty;
     }
 
     // public class FitbitSettings
